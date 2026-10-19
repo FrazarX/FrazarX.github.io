@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <!-- `js` gates the scroll-reveal start state in site.css. Inline, and in the
+       head on purpose: a deferred script would set it after first paint, so
+       the content would draw, blink out, then animate back in. -->
+  <script>document.documentElement.classList.add("js");</script>
+  <meta name="description" content="Solo Gainz — hunt-ready fitness combat on Android. Daily quests, real combat frames, local Wi‑Fi PVP, loot chests, and rank shields. Sign in once, then play offline. Direct APK download." />
+  <meta name="theme-color" content="#071426" />
+  <meta name="robots" content="index, follow" />
+  <title>Solo Gainz — Fitness Combat for Android</title>
+  <link rel="icon" href="app_icon.png" />
+  <link rel="apple-touch-icon" href="app_icon.png" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Solo Gainz" />
+  <meta property="og:title" content="Solo Gainz — Fitness Combat for Android" />
+  <meta property="og:description" content="Daily quests, real combat frames, local Wi‑Fi PVP, loot chests, and rank shields. Sign in once, then play offline. Direct APK download." />
+  <link rel="canonical" href="https://frazarx.github.io/" />
+  <meta property="og:url" content="https://frazarx.github.io/" />
+  <meta property="og:image" content="https://frazarx.github.io/app_thumbnail.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Solo Gainz — Fitness Combat for Android" />
+  <meta name="twitter:description" content="Daily quests, real combat, local PVP, loot chests, rank shields. Sign in once, then play offline. Direct APK." />
+  <meta name="twitter:image" content="https://frazarx.github.io/app_thumbnail.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="site.css" />
+</head>
+<body class="track-page">
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="chrome">
+    <a class="chrome__brand" href="#panel-0">
+      <span>Solo Gainz</span>
+    </a>
+    <div class="chrome__rail" aria-hidden="true">
+      <div class="chrome__fill" id="scrollFill"></div>
+    </div>
+    <div class="chrome__actions">
+      <a class="chrome__apk" href="https://github.com/FrazarX/FrazarX.github.io/releases/latest/download/Solo.Gainz.apk" download="Solo.Gainz.apk" rel="noopener">Download the app</a>
+    </div>
+  </header>
+
+  <nav class="dots" id="dots" aria-label="Sections"></nav>
+
+  <div class="track" id="track" tabindex="0">
+    <!-- 0 INTRO — title only, by design. Everything that used to crowd the
+         hero now lives in the sections that follow. -->
+    <section class="panel panel--intro" data-index="0" id="panel-0">
+      <div class="panel__bg panel__bg--arena" aria-hidden="true"></div>
+      <div class="panel__inner intro">
+        <h1 class="mega" data-reveal>Solo<br />Gainz</h1>
+        <p class="scroll-cue" aria-hidden="true">
+          <span>Scroll</span>
+          <span class="scroll-cue__arrow"></span>
+        </p>
+      </div>
+    </section>
+
+    <!-- 1 TRAILER -->
+    <section class="panel panel--trailer" data-index="1">
+      <div class="panel__inner trailer">
+        <div class="trailer__copy">
+          <p class="kicker" data-reveal>Watch</p>
+          <h2 data-reveal>See the hunt.</h2>
+          <p class="body" data-reveal>A short look at Solo Gainz — train, fight, ascend. Everything you see is captured in-app.</p>
+        </div>
+        <div class="trailer__stage" data-reveal>
+          <video
+            class="trailer__video"
+            controls
+            playsinline
+            preload="none"
+            aria-label="Solo Gainz trailer"
+          >
+            <source src="media/trailer/Solo-Gainz-Trailer.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 FAQ -->
+    <section class="panel panel--faq" data-index="2">
+      <div class="panel__inner faq">
+        <div class="faq__copy">
+          <p class="kicker" data-reveal>Questions</p>
+          <h2 data-reveal>Before you sideload.</h2>
+          <p class="body" data-reveal>The short version, prototype.</p>
+        </div>
+        <div class="faq-list" id="faqList">
+          <div class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>How do I install the APK?</span>
+              <span class="faq-q__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-a"><p>Download the APK, then open it on your Android device. Allow "Install from this source" if prompted. Requires Android 8.0 or newer.</p></div>
+          </div>
+          <div class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>Is it safe to sideload?</span>
+              <span class="faq-q__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-a"><p>Yes. The APK is signed and served directly by us. Your device may warn you simply because it&#39;s outside the Play Store — that&#39;s normal for direct installs.</p></div>
+          </div>
+          <div class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>Is there an iOS version?</span>
+              <span class="faq-q__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-a"><p>Not yet. Solo Gainz is Android-only for now. iOS is on the roadmap but has no release date.</p></div>
+          </div>
+          <div class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>Does PVP need the internet?</span>
+              <span class="faq-q__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-a"><p>No. PVP runs over your local Wi‑Fi / LAN — host or join prototypes on the same network. The rest of the game runs offline once you have signed in.</p></div>
+          </div>
+          <div class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>Do I need an account, and do I need to stay online?</span>
+              <span class="faq-q__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-a"><p>An account is required to start, and that is the only part that needs a connection. It is what keeps your progress safe if you lose your phone, what places you on the leaderboard, and what lets the game verify the date so daily quests cannot be farmed by changing your clock. After that first sign-in Solo Gainz runs offline — train, fight, open chests — and syncs everything the next time you have signal.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 FOOTER -->
+    <section class="panel panel--get" data-index="3">
+      <footer class="panel__inner site-footer">
+        <div class="site-footer__top">
+          <div class="site-footer__brand">
+            <img class="site-footer__logo" src="app_icon.png" alt="Solo Gainz app icon" width="56" height="56" loading="lazy" decoding="async" />
+            <div>
+              <p class="site-footer__name">Solo Gainz</p>
+              <p class="site-footer__tag">Fitness combat. Sign in once, then offline.</p>
+            </div>
+          </div>
+          <nav class="site-footer__nav" aria-label="Footer">
+            <a href="#panel-0">Home</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms &amp; Conditions</a>
+          </nav>
+        </div>
+        <div class="site-footer__divider" aria-hidden="true"></div>
+        <div class="site-footer__bottom">
+          <p class="site-footer__copy">© 2026 Xoventic · Solo Gainz. All rights reserved.</p>
+          <div class="site-footer__social">
+            <a href="mailto:support@xoventic.com">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <script src="site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://frazarx.github.io/sitemap.xml
