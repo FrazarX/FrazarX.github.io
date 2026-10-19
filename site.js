@@ -305,7 +305,54 @@
     { id: "lower_back", label: "Lower Back", color: "#cd4d73" },
   ];
 
+  /**
+   * The monogram colours the app sells and the avatar is drawn on
+   * (`GameData.colors` in lib/game_data.dart). The database stores the id;
+   * this is the id's colour. An id this table has never heard of falls back
+   * to the site blue rather than to nothing.
+   */
+  const AVATAR_COLORS = {
+    color_default: "#e8ecf5",
+    color_crimson: "#e53935",
+    color_azure: "#29b6f6",
+    color_emerald: "#43a047",
+    color_lemon: "#ffe629",
+    color_cosmic: "#101018",
+    color_lime: "#c6ff00",
+    color_violet: "#ab47bc",
+    color_indigo: "#5c6bc0",
+    color_orange: "#ff6d00",
+    color_gold: "#ffc107",
+    color_rose: "#ec407a",
+    color_bronze: "#a1887f",
+    color_void: "#1a1a2e",
+    color_plasma: "#ff69b4",
+    color_royal: "#7b5ce6",
+    color_champion: "#d4a437",
+    color_arctic: "#8fd8ff",
+    color_sunset: "#ff7a59",
+    color_jade: "#1fb58f",
+    color_slate: "#7c8aa5",
+    color_olive: "#a4a23a",
+  };
+
   const SVG_NS = "http://www.w3.org/2000/svg";
+
+  /** Calls one of the project's public RPCs with the publishable key. */
+  async function rpc(name, body) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body || {}),
+    });
+    if (!response.ok) throw new Error(`${name} ${response.status}`);
+    return response.json();
+  }
 
   /** Rounds a number for display: 1200 -> "1,200", 3600 -> "3.6k". */
   function formatCount(n) {
@@ -386,18 +433,7 @@
     const familiesFigure = panel.querySelector('[data-chart="families"]');
 
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/public_site_stats`, {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: "{}",
-      });
-      if (!response.ok) throw new Error(`stats ${response.status}`);
-      const data = await response.json();
+      const data = await rpc("public_site_stats");
 
       const tierCounts = new Map(
         (data.tiers || []).map((t) => [t.rank, Number(t.players) || 0])
@@ -433,12 +469,107 @@
     }
   }
 
+  /**
+   * The top five on the ladder, as a row of cards under the pies.
+   *
+   * The board and the player card are the two RPCs the game already publishes
+   * to the world - the Dungeons board reads the first one before a player has
+   * even signed in - so the site adds no new public surface to show the same
+   * names the board already shows. The avatar is a monogram: the app has no
+   * photos, it draws the first letter of the name on the colour the player
+   * chose, and this draws the same letter on the same colour.
+   */
+  async function loadTopPlayers() {
+    const block = document.querySelector("[data-topfive]");
+    const list = document.querySelector("[data-players]");
+    if (!block || !list) return;
+
+    try {
+      const board = await rpc("public_leaderboard", { max_rows: 25 });
+      const rows = (board || [])
+        .filter((r) => r && r.username)
+        .map((r) => ({
+          username: String(r.username),
+          level: Number(r.level) || 0,
+          rank: String(r.rank_tier || "E").trim() || "E",
+          elo: r.elo == null ? null : Number(r.elo),
+          ranked: r.ranked !== false,
+        }))
+        // The app's own score: level x 4 + elo (migration 0054). Sorting by it
+        // here means the site and the board agree on who is in the top five.
+        .sort((a, b) => {
+          const as = a.level * 4 + (a.elo == null ? 1000 : a.elo);
+          const bs = b.level * 4 + (b.elo == null ? 1000 : b.elo);
+          return bs - as;
+        })
+        .slice(0, 5);
+
+      if (!rows.length) return;
+
+      const cards = await Promise.all(
+        rows.map((p) =>
+          rpc("public_player_card", { p_username: p.username }).catch(() => null)
+        )
+      );
+
+      list.textContent = "";
+      rows.forEach((player, i) => {
+        // `public_player_card` is a `returns table` function, so PostgREST
+        // hands back a row list; one row, but still a list.
+        const card = (cards[i] || [])[0] || {};
+        const tier =
+          RANK_TIERS.find((t) => t.id === player.rank) ||
+          RANK_TIERS.find((t) => t.id === card.rank_tier) ||
+          RANK_TIERS[0];
+        const colour =
+          AVATAR_COLORS[card.avatar_color] ||
+          AVATAR_COLORS[card.color_id] ||
+          "#8fa4c4";
+
+        const li = document.createElement("li");
+        li.className = "player";
+
+        const avatar = document.createElement("span");
+        avatar.className = "player__avatar";
+        avatar.style.setProperty("--c", colour);
+        avatar.textContent = player.username.charAt(0).toUpperCase();
+
+        const who = document.createElement("span");
+        who.className = "player__who";
+        const name = document.createElement("b");
+        name.className = "player__name";
+        name.textContent = player.username;
+        const meta = document.createElement("span");
+        meta.className = "player__meta";
+        meta.style.setProperty("--c", tier.color);
+        meta.textContent = `${tier.id} · ${tier.label} · Lv ${player.level}`;
+        who.append(name, meta);
+
+        const score = document.createElement("span");
+        score.className = "player__score";
+        const elo = document.createElement("b");
+        elo.textContent = player.elo == null ? "—" : formatCount(player.elo);
+        const label = document.createElement("small");
+        label.textContent = player.ranked ? "ELO" : "unranked";
+        score.append(elo, label);
+
+        li.append(avatar, who, score);
+        list.appendChild(li);
+      });
+
+      block.hidden = false;
+    } catch (err) {
+      // No board, no strip. The pies still stand on their own.
+    }
+  }
+
   // ── Boot ──────────────────────────────────────────────────────────────────
 
   function boot() {
     setupFaq();
     setupReveal();
     setupCommunity();
+    loadTopPlayers();
 
     const track = document.getElementById("track");
     if (!track) return;
