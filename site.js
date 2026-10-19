@@ -369,42 +369,13 @@
     });
   }
 
-  /** The last 7 days, oldest first, as bars. */
-  function drawWeek(container, days) {
-    if (!container) return;
-    container.textContent = "";
-    const rows = Array.isArray(days) ? days.slice(-7) : [];
-    const max = rows.reduce((m, d) => Math.max(m, Number(d.sessions) || 0), 0);
-
-    rows.forEach((d) => {
-      const sessions = Number(d.sessions) || 0;
-      const col = document.createElement("div");
-      col.className = "week__col" + (sessions > 0 ? "" : " is-zero");
-      col.title = `${d.day} — ${sessions} session${sessions === 1 ? "" : "s"}`;
-
-      const bar = document.createElement("span");
-      const height = max > 0 && sessions > 0 ? Math.max(6, Math.round((sessions / max) * 46)) : 3;
-      bar.style.height = `${height}px`;
-
-      const day = document.createElement("small");
-      const parsed = new Date(`${d.day}T00:00:00`);
-      day.textContent = Number.isNaN(parsed.getTime())
-        ? "—"
-        : parsed.toLocaleDateString("en-US", { weekday: "short" });
-
-      col.append(bar, day);
-      container.appendChild(col);
-    });
-
-    return max;
-  }
-
   /**
    * Reads the aggregate stats and fills the panel in.
    *
-   * A failed fetch is not a broken panel: the numbers keep their em dash, the
-   * stamp says so, and the rest of the site carries on. The site has no server
-   * of its own, so the database being unreachable is a normal Tuesday.
+   * A failed fetch is not a broken panel: the charts keep their em dash, the
+   * note under them says what happened, and the rest of the site carries on.
+   * The site has no server of its own, so the database being unreachable is a
+   * normal Tuesday.
    */
   async function setupCommunity() {
     const panel = document.querySelector(".panel--community");
@@ -413,13 +384,6 @@
     const stamp = panel.querySelector("[data-stamp]");
     const tiersFigure = panel.querySelector('[data-chart="tiers"]');
     const familiesFigure = panel.querySelector('[data-chart="families"]');
-    const bars = panel.querySelector("[data-week-bars]");
-    const weekNote = panel.querySelector("[data-week-note]");
-
-    const setStat = (key, value) => {
-      const el = panel.querySelector(`[data-stat="${key}"]`);
-      if (el) el.textContent = value;
-    };
 
     try {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/public_site_stats`, {
@@ -461,34 +425,11 @@
         })),
         "points"
       );
-
-      setStat("players", formatCount(data.players));
-      setStat("online_now", formatCount(data.online_now));
-      setStat("active_7d", formatCount(data.active_7d));
-      setStat("sessions_7d", formatCount(data.sessions_7d));
-      setStat("volume_7d", formatCount(data.volume_7d));
-      setStat("joined_7d", formatCount(data.joined_7d));
-
-      const max = drawWeek(bars, data.days) || 0;
-      if (weekNote) {
-        weekNote.textContent =
-          max > 0 ? "Sessions per day" : "No sessions logged this week";
-      }
-
-      if (stamp) {
-        const when = data.generated_at
-          ? new Date(data.generated_at).toLocaleString("en-US", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "2-digit",
-            })
-          : "";
-        stamp.textContent = when ? `Live from the database · ${when}` : "Live from the database";
-      }
     } catch (err) {
-      if (stamp) stamp.textContent = "Live numbers are unavailable right now";
-      if (weekNote) weekNote.textContent = "—";
+      if (stamp) {
+        stamp.textContent = "Live numbers are unavailable right now";
+        stamp.hidden = false;
+      }
     }
   }
 
