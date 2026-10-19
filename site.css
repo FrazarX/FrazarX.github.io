@@ -793,14 +793,49 @@ h2 {
 }
 
 /* ── Community (section 5) ───────────────────────────────────────────────
-   Live numbers from the cloud database. The pies are drawn in site.js from
-   the aggregate RPC; the markup here is only the frame, so a failed fetch
-   leaves an honest empty chart instead of a broken one. */
+   Live numbers from the cloud database. The charts are drawn in site.js from
+   the aggregate RPC; the markup here is only the frame plus the shimmer
+   skeletons that stand in until the database answers. */
 .panel--community {
   background:
   radial-gradient(ellipse 55% 45% at 18% 25%, rgba(62, 176, 255, 0.15), transparent 62%),
   radial-gradient(ellipse 45% 40% at 84% 80%, rgba(255, 176, 58, 0.07), transparent 58%),
   linear-gradient(180deg, #05101f, #03070f);
+}
+
+/* ── Shimmer ──────────────────────────────────────────────────────────────
+   One loading language for everything that waits on the database: a slow
+   highlight travelling across a flat block. The blocks are sized in the
+   markup, so nothing reflows when the real content lands on top of them. */
+@keyframes sg-shimmer {
+  0% {
+    background-position: -160% 0;
+  }
+  100% {
+    background-position: 260% 0;
+  }
+}
+
+@keyframes sg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.skeleton {
+  display: block;
+  min-height: 0.7em;
+  border-radius: 5px;
+  background: rgba(238, 242, 255, 0.08);
+  background-image: linear-gradient(
+    90deg,
+    rgba(238, 242, 255, 0.04) 0%,
+    rgba(143, 208, 255, 0.22) 45%,
+    rgba(238, 242, 255, 0.04) 90%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: sg-shimmer 1.4s ease-in-out infinite;
 }
 
 /* Doubled up on .panel__inner so the rule still wins over the plain
@@ -814,7 +849,8 @@ h2 {
   justify-content: center;
   align-items: stretch;
   gap: clamp(1.1rem, 2.6vw, 1.8rem);
-  --donut: clamp(132px, 26vh, 208px);
+  --chart-h: clamp(150px, 21vh, 190px);
+  --donut: var(--chart-h);
 }
 
 .community__copy {
@@ -836,9 +872,16 @@ h2 {
 
 .community__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.25rem, 3.4vw, 3rem);
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: start;
+}
+
+.community__charts {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.2vw, 1.5rem);
+  min-width: 0;
 }
 
 .chart {
@@ -871,10 +914,90 @@ h2 {
   color: var(--faint);
 }
 
+/* Both charts stand the same height, so the panel reads as a pair and not as
+   one big chart with something small tucked beside it. */
 .chart__body {
   display: flex;
   align-items: center;
-  gap: clamp(0.8rem, 2vw, 1.5rem);
+  gap: clamp(0.9rem, 2.2vw, 1.75rem);
+  min-height: var(--chart-h);
+}
+
+/* The ladder: a bar per rank, not another pie. Seven rungs of the same
+   ladder the game walks, so the shape of the community reads at a glance. */
+.bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.35rem;
+  height: var(--chart-h);
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 2.6rem;
+  align-items: center;
+  gap: 0.7rem;
+  /* The seven rungs share the chart's height exactly, so this chart and the
+     donut beside it are the same size rather than nearly the same size. */
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.bar__chip {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  font-style: normal;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(0.62rem, 1.7vh, 0.8rem);
+  color: #08121f;
+  background: var(--c, var(--steel));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.bar__track {
+  display: block;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: rgba(238, 242, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(238, 242, 255, 0.08);
+  overflow: hidden;
+}
+
+.bar__track i {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--c, var(--signal)), rgba(255, 255, 255, 0.75));
+  box-shadow: 0 0 12px rgba(66, 165, 245, 0.3);
+  transition: width 0.5s ease;
+}
+
+.bar__count {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: right;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar.is-empty .bar__chip {
+  background: rgba(238, 242, 255, 0.08);
+  color: var(--faint);
+  box-shadow: none;
+}
+
+.bar.is-empty .bar__count {
+  color: var(--faint);
+  opacity: 0.65;
 }
 
 .donut {
@@ -894,6 +1017,21 @@ h2 {
   fill: none;
   stroke: rgba(238, 242, 255, 0.07);
   stroke-width: 13;
+}
+
+/* The loading ring: one arc going round while the database thinks. */
+.donut__load {
+  fill: none;
+  stroke: rgba(143, 208, 255, 0.5);
+  stroke-width: 13;
+  stroke-linecap: round;
+  stroke-dasharray: 46 218;
+  transform-origin: 60px 60px;
+  animation: sg-spin 1.1s linear infinite;
+}
+
+.chart:not(.is-loading) .donut__load {
+  display: none;
 }
 
 .donut__centre {
@@ -925,9 +1063,9 @@ h2 {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem 1.6rem;
   min-width: 0;
   flex: 1 1 auto;
 }
@@ -961,25 +1099,23 @@ h2 {
   opacity: 0.5;
 }
 
-.community__stamp {
-  margin: 0.4rem 0 0;
-  text-align: center;
-  font-size: 0.64rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-
-/* ── Top five (the ladder's best, as a row of cards) ───────────────────── */
+/* ── Top five: one card, to the right of the charts ───────────────────── */
 .topfive {
-  margin-top: clamp(1.1rem, 2.4vw, 1.6rem);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(18, 44, 74, 0.5), rgba(7, 20, 38, 0.35));
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
 }
 
 .topfive__head {
   display: flex;
   align-items: baseline;
   gap: 0.6rem;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.7rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--line);
 }
@@ -993,7 +1129,7 @@ h2 {
 
 .topfive__note {
   margin-left: auto;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--faint);
@@ -1003,9 +1139,10 @@ h2 {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1 1 auto;
 }
 
 .player {
@@ -1013,24 +1150,24 @@ h2 {
   align-items: center;
   gap: 0.6rem;
   min-width: 0;
-  padding: 0.55rem 0.65rem;
-  border: 1px solid var(--line);
+  padding: 0.45rem 0.55rem;
   border-radius: 12px;
-  background: rgba(12, 32, 56, 0.35);
+  background: rgba(7, 20, 38, 0.5);
+  border: 1px solid rgba(238, 242, 255, 0.07);
 }
 
 .player__avatar {
   flex: none;
   display: grid;
   place-content: center;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: var(--c);
   color: #0a1524;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.95rem;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12);
 }
 
@@ -1080,29 +1217,115 @@ h2 {
   color: var(--faint);
 }
 
+.topfive__empty {
+  margin: 0.6rem 0 0;
+  font-size: 0.7rem;
+  color: var(--faint);
+}
+
+/* ── Skeleton sizes ───────────────────────────────────────────────────────
+   The shimmer blocks are sized here, after the components they stand in for,
+   so the layout does not jump when the real content replaces them. */
+.bar__chip.skeleton {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 8px;
+  color: transparent;
+}
+
+.bar__track .skeleton {
+  width: 100%;
+  height: 100%;
+}
+
+.bar__count.skeleton {
+  width: 2.2rem;
+  height: 0.8rem;
+}
+
+.legend li i.skeleton {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend li span.skeleton {
+  width: 5.5rem;
+  height: 0.75rem;
+}
+
+.legend li b.skeleton {
+  width: 2rem;
+  height: 0.75rem;
+}
+
+.player__avatar.skeleton {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: transparent;
+}
+
+.player__who b.skeleton {
+  width: 4.5rem;
+  height: 0.85rem;
+}
+
+.player__who span.skeleton {
+  width: 6.5rem;
+  height: 0.6rem;
+  margin-top: 0.3rem;
+}
+
+.player__score b.skeleton {
+  width: 2rem;
+  height: 0.9rem;
+}
+
+.player__score small.skeleton {
+  width: 2.4rem;
+  height: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .skeleton,
+  .donut__load {
+    animation: none;
+  }
+}
+
+.community__stamp {
+  margin: 0.4rem 0 0;
+  text-align: center;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
 @media (max-width: 900px) {
   .community__grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.6rem;
+    gap: 1.5rem;
   }
 
   .panel__inner.community {
-    --donut: clamp(124px, 34vw, 168px);
+    --chart-h: clamp(150px, 30vw, 190px);
+    --donut: var(--chart-h);
+  }
+}
+
+@media (max-width: 520px) {
+  .chart__body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
   }
 
-  /* One row, sideways. Five cards stacked would push the pies off the
-     screen, and the panel is a vertical page here. */
-  .players {
-    display: flex;
-    gap: 0.6rem;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    padding-bottom: 0.35rem;
-  }
-
-  .player {
-    flex: 0 0 190px;
-    scroll-snap-align: start;
+  .legend {
+    width: 100%;
   }
 }
 
@@ -1549,6 +1772,36 @@ body.legal {
   max-width: 780px;
   margin: 0 auto;
   padding: clamp(2rem, 6vw, 4.5rem) clamp(1.15rem, 5vw, 2rem) 5rem;
+}
+
+/* The legal pages have no database to wait for, but they do have web fonts:
+   the serif the policy is set in arrives after the first paint. This is the
+   same loading language the community panel uses, tied to that real wait -
+   `html.is-loading` is set before the first paint and removed when the fonts
+   are in (or after 1.5s, whichever comes first). Without JavaScript the
+   class is never added and the page simply reads. */
+html.is-loading .legal-wrap::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 32%,
+    rgba(143, 208, 255, 0.13) 50%,
+    transparent 68%
+  );
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  animation: sg-shimmer 1.15s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.is-loading .legal-wrap::after {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 /* The opening summary paragraph reads a touch larger. */

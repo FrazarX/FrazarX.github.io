@@ -17,6 +17,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="site.css" />
+  <!-- The shimmer sweep on this page waits for the web fonts, so the class
+       has to be on the document before the first paint. -->
+  <script>document.documentElement.classList.add("is-loading");</script>
 </head>
 <body class="legal">
   <div class="noise" aria-hidden="true"></div>
@@ -108,6 +111,8 @@
 
     <h2 id="p-website">8. This website &amp; hosting</h2>
     <p>This companion website is served by a static hosting provider that may automatically record standard, aggregated technical logs (such as anonymised request counts, timestamps, approximate region, and error information) for reliability, security, and abuse prevention. These logs are handled by the hosting provider under its own terms, are not combined by us to identify you, and are not used for advertising. The website does not set advertising cookies.</p>
+    <p><strong>This website also keeps its own anonymous visit log.</strong> When a page opens, the browser sends one small record: a random identifier it invented and keeps in its own local storage, the page you opened, the browser and operating system it reports, the screen size, your interface language, the host of the site that referred you, and the time. That record is stored in our database so we can see how many people use this site, which pages they read, whether they come back, and what they are browsing on.</p>
+    <p>That identifier is random and is not derived from your device, your address or anything else about you, so it identifies a browser rather than a person. <strong>No IP address is collected or stored by us</strong>, no advertising or tracking identifier is used, and nothing is shared with advertisers or any third party. The log is used only to see how the site is used. Clearing your browser's storage for this site removes the identifier, and a browser that blocks the request simply is not counted.</p>
 
     <h2 id="p-retention">9. Data retention</h2>
     <p>Data on your device is retained for as long as the App is installed and until you delete it (by clearing the App's data or uninstalling).</p>
@@ -150,5 +155,27 @@
       <a href="terms.html">Terms &amp; Conditions →</a>
     </div>
   </main>
+
+  <script>
+    // The shimmer comes off when the page's own fonts have landed - that is
+    // the only thing this page actually waits for.
+    (function () {
+      var done = function () {
+        document.documentElement.classList.remove("is-loading");
+      };
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        done();
+        return;
+      }
+      var limit = setTimeout(done, 1500);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () {
+          clearTimeout(limit);
+          done();
+        });
+      }
+    })();
+  </script>
+  <script src="analytics.js" defer></script>
 </body>
 </html>

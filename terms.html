@@ -17,6 +17,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="site.css" />
+  <!-- The shimmer sweep on this page waits for the web fonts, so the class
+       has to be on the document before the first paint. -->
+  <script>document.documentElement.classList.add("is-loading");</script>
 </head>
 <body class="legal">
   <div class="noise" aria-hidden="true"></div>
@@ -170,5 +173,26 @@
       <a href="privacy.html">Privacy Policy →</a>
     </div>
   </main>
+  <script>
+    // The shimmer comes off when the page's own fonts have landed - that is
+    // the only thing this page actually waits for.
+    (function () {
+      var done = function () {
+        document.documentElement.classList.remove("is-loading");
+      };
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        done();
+        return;
+      }
+      var limit = setTimeout(done, 1500);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () {
+          clearTimeout(limit);
+          done();
+        });
+      }
+    })();
+  </script>
+  <script src="analytics.js" defer></script>
 </body>
 </html>

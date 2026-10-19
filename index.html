@@ -244,53 +244,64 @@
         </div>
 
         <div class="community__grid">
-          <figure class="chart" data-chart="tiers">
-            <figcaption class="chart__title">
-              <span class="chart__name">The ladder</span>
-              <span class="chart__note">Players by rank</span>
-            </figcaption>
-            <div class="chart__body">
-              <div class="donut" data-donut>
-                <svg viewBox="0 0 120 120" role="img" aria-label="Players by rank tier">
-                  <circle class="donut__track" cx="60" cy="60" r="42"></circle>
-                  <g data-slices></g>
-                </svg>
-                <div class="donut__centre">
-                  <span class="donut__value" data-value>—</span>
-                  <span class="donut__label" data-centre-label>players</span>
-                </div>
-              </div>
-              <ul class="legend" data-legend></ul>
-            </div>
-          </figure>
+          <div class="community__charts">
+            <figure class="chart is-loading" data-chart="tiers">
+              <figcaption class="chart__title">
+                <span class="chart__name">The ladder</span>
+                <span class="chart__note">Players by rank</span>
+              </figcaption>
+              <ul class="bars" data-bars>
+                <li class="bar"><i class="bar__chip skeleton"></i><span class="bar__track"><i class="skeleton"></i></span><b class="bar__count skeleton"></b></li>
+                <li class="bar"><i class="bar__chip skeleton"></i><span class="bar__track"><i class="skeleton"></i></span><b class="bar__count skeleton"></b></li>
+                <li class="bar"><i class="bar__chip skeleton"></i><span class="bar__track"><i class="skeleton"></i></span><b class="bar__count skeleton"></b></li>
+                <li class="bar"><i class="bar__chip skeleton"></i><span class="bar__track"><i class="skeleton"></i></span><b class="bar__count skeleton"></b></li>
+                <li class="bar"><i class="bar__chip skeleton"></i><span class="bar__track"><i class="skeleton"></i></span><b class="bar__count skeleton"></b></li>
+                <li class="bar"><i class="bar__chip skeleton"></i><span class="bar__track"><i class="skeleton"></i></span><b class="bar__count skeleton"></b></li>
+                <li class="bar"><i class="bar__chip skeleton"></i><span class="bar__track"><i class="skeleton"></i></span><b class="bar__count skeleton"></b></li>
+              </ul>
+            </figure>
 
-          <figure class="chart" data-chart="families">
-            <figcaption class="chart__title">
-              <span class="chart__name">Where the training goes</span>
-              <span class="chart__note">Training points by movement family</span>
-            </figcaption>
-            <div class="chart__body">
-              <div class="donut" data-donut>
-                <svg viewBox="0 0 120 120" role="img" aria-label="Training points by movement family">
-                  <circle class="donut__track" cx="60" cy="60" r="42"></circle>
-                  <g data-slices></g>
-                </svg>
-                <div class="donut__centre">
-                  <span class="donut__value" data-value>—</span>
-                  <span class="donut__label" data-centre-label>points</span>
+            <figure class="chart is-loading" data-chart="families">
+              <figcaption class="chart__title">
+                <span class="chart__name">Where the training goes</span>
+                <span class="chart__note">Points by movement family</span>
+              </figcaption>
+              <div class="chart__body">
+                <div class="donut">
+                  <svg viewBox="0 0 120 120" role="img" aria-label="Training points by movement family">
+                    <circle class="donut__track" cx="60" cy="60" r="42"></circle>
+                    <circle class="donut__load" cx="60" cy="60" r="42"></circle>
+                    <g data-slices></g>
+                  </svg>
+                  <div class="donut__centre">
+                    <span class="donut__value" data-value>—</span>
+                    <span class="donut__label" data-centre-label>points</span>
+                  </div>
                 </div>
+                <ul class="legend" data-legend>
+                  <li><i class="skeleton"></i><span class="skeleton"></span><b class="skeleton"></b></li>
+                  <li><i class="skeleton"></i><span class="skeleton"></span><b class="skeleton"></b></li>
+                  <li><i class="skeleton"></i><span class="skeleton"></span><b class="skeleton"></b></li>
+                  <li><i class="skeleton"></i><span class="skeleton"></span><b class="skeleton"></b></li>
+                </ul>
               </div>
-              <ul class="legend" data-legend></ul>
-            </div>
-          </figure>
-        </div>
-
-        <div class="topfive" data-topfive hidden>
-          <div class="topfive__head">
-            <span class="topfive__name">Top five</span>
-            <span class="topfive__note">Best on the ladder</span>
+            </figure>
           </div>
-          <ul class="players" data-players></ul>
+
+          <section class="topfive is-loading" data-topfive>
+            <div class="topfive__head">
+              <span class="topfive__name">Top five</span>
+              <span class="topfive__note">Best on the ladder</span>
+            </div>
+            <ol class="players" data-players>
+              <li class="player"><span class="player__avatar skeleton"></span><span class="player__who"><b class="skeleton"></b><span class="skeleton"></span></span><span class="player__score"><b class="skeleton"></b><small class="skeleton"></small></span></li>
+              <li class="player"><span class="player__avatar skeleton"></span><span class="player__who"><b class="skeleton"></b><span class="skeleton"></span></span><span class="player__score"><b class="skeleton"></b><small class="skeleton"></small></span></li>
+              <li class="player"><span class="player__avatar skeleton"></span><span class="player__who"><b class="skeleton"></b><span class="skeleton"></span></span><span class="player__score"><b class="skeleton"></b><small class="skeleton"></small></span></li>
+              <li class="player"><span class="player__avatar skeleton"></span><span class="player__who"><b class="skeleton"></b><span class="skeleton"></span></span><span class="player__score"><b class="skeleton"></b><small class="skeleton"></small></span></li>
+              <li class="player"><span class="player__avatar skeleton"></span><span class="player__who"><b class="skeleton"></b><span class="skeleton"></span></span><span class="player__score"><b class="skeleton"></b><small class="skeleton"></small></span></li>
+            </ol>
+            <p class="topfive__empty" data-topfive-empty hidden>The board is not answering right now.</p>
+          </section>
         </div>
 
         <p class="community__stamp" data-stamp hidden></p>
@@ -325,6 +336,7 @@
     </section>
   </div>
 
+  <script src="analytics.js" defer></script>
   <script src="site.js" defer></script>
 </body>
 </html>

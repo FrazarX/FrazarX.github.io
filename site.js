@@ -362,6 +362,48 @@
   }
 
   /**
+   * Draws the ladder: one bar per rank tier, in the tier's own colour.
+   *
+   * Not a pie. Seven rungs of the same ladder the game walks read better as
+   * bars than as slices of a circle: the shape of the community (everyone
+   * still at the bottom, or a spread up the ladder) is the point, and a pie
+   * of one colour cannot say it.
+   */
+  function drawLadder(list, tiers) {
+    if (!list) return;
+    list.textContent = "";
+    const max = Math.max(1, ...tiers.map((t) => t.value));
+
+    tiers.forEach((tier) => {
+      const li = document.createElement("li");
+      li.className = "bar" + (tier.value > 0 ? "" : " is-empty");
+      li.title = `${tier.id} · ${tier.label} — ${formatCount(tier.value)} player${tier.value === 1 ? "" : "s"}`;
+
+      const chip = document.createElement("i");
+      chip.className = "bar__chip";
+      chip.style.setProperty("--c", tier.color);
+      chip.textContent = tier.id;
+
+      const track = document.createElement("span");
+      track.className = "bar__track";
+      const fill = document.createElement("i");
+      fill.style.setProperty("--c", tier.color);
+      fill.style.width = `${Math.max(
+        tier.value > 0 ? 4 : 0,
+        Math.round((tier.value / max) * 100)
+      )}%`;
+      track.appendChild(fill);
+
+      const count = document.createElement("b");
+      count.className = "bar__count";
+      count.textContent = formatCount(tier.value);
+
+      li.append(chip, track, count);
+      list.appendChild(li);
+    });
+  }
+
+  /**
    * Draws one donut: a slice per entry, drawn as a dashed circle so the
    * segments can be a stroke rather than a filled path.
    */
@@ -431,6 +473,7 @@
     const stamp = panel.querySelector("[data-stamp]");
     const tiersFigure = panel.querySelector('[data-chart="tiers"]');
     const familiesFigure = panel.querySelector('[data-chart="families"]');
+    const bars = panel.querySelector("[data-bars]");
 
     try {
       const data = await rpc("public_site_stats");
@@ -438,16 +481,16 @@
       const tierCounts = new Map(
         (data.tiers || []).map((t) => [t.rank, Number(t.players) || 0])
       );
-      drawDonut(
-        tiersFigure,
+      drawLadder(
+        bars,
         RANK_TIERS.map((t) => ({
+          id: t.id,
           label: t.label,
-          suffix: t.id,
           color: t.color,
           value: tierCounts.get(t.id) || 0,
-        })),
-        "players"
+        }))
       );
+      if (tiersFigure) tiersFigure.classList.remove("is-loading");
 
       const familyPoints = new Map(
         (data.families || []).map((f) => [f.id, Number(f.points) || 0])
@@ -461,11 +504,14 @@
         })),
         "points"
       );
+      if (familiesFigure) familiesFigure.classList.remove("is-loading");
     } catch (err) {
       if (stamp) {
         stamp.textContent = "Live numbers are unavailable right now";
         stamp.hidden = false;
       }
+      if (tiersFigure) tiersFigure.classList.remove("is-loading");
+      if (familiesFigure) familiesFigure.classList.remove("is-loading");
     }
   }
 
@@ -482,6 +528,7 @@
   async function loadTopPlayers() {
     const block = document.querySelector("[data-topfive]");
     const list = document.querySelector("[data-players]");
+    const empty = document.querySelector("[data-topfive-empty]");
     if (!block || !list) return;
 
     try {
@@ -504,7 +551,7 @@
         })
         .slice(0, 5);
 
-      if (!rows.length) return;
+      if (!rows.length) throw new Error("empty board");
 
       const cards = await Promise.all(
         rows.map((p) =>
@@ -557,9 +604,12 @@
         list.appendChild(li);
       });
 
-      block.hidden = false;
+      block.classList.remove("is-loading");
     } catch (err) {
-      // No board, no strip. The pies still stand on their own.
+      // No board: the card says so instead of shimmering for ever.
+      list.textContent = "";
+      if (empty) empty.hidden = false;
+      block.classList.remove("is-loading");
     }
   }
 
