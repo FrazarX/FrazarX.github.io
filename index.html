@@ -234,30 +234,108 @@
       </div>
     </section>
 
-    <!-- 4 FOOTER -->
-    <section class="panel panel--get" data-index="4">
+    <!-- 4 COMMUNITY -->
+    <section class="panel panel--community" data-index="4" id="panel-community">
+      <div class="panel__inner community">
+        <div class="community__copy">
+          <p class="kicker" data-reveal>Community</p>
+          <h2 data-reveal>Who is training.</h2>
+          <p class="body" data-reveal>Live numbers read from the Solo Gainz cloud database. Counts only — never a name, a level, a device or a single workout.</p>
+        </div>
+
+        <div class="community__grid">
+          <figure class="chart" data-chart="tiers">
+            <figcaption class="chart__title">
+              <span class="chart__name">The ladder</span>
+              <span class="chart__note">Players by rank</span>
+            </figcaption>
+            <div class="chart__body">
+              <div class="donut" data-donut>
+                <svg viewBox="0 0 120 120" role="img" aria-label="Players by rank tier">
+                  <circle class="donut__track" cx="60" cy="60" r="42"></circle>
+                  <g data-slices></g>
+                </svg>
+                <div class="donut__centre">
+                  <span class="donut__value" data-value>—</span>
+                  <span class="donut__label" data-centre-label>players</span>
+                </div>
+              </div>
+              <ul class="legend" data-legend></ul>
+            </div>
+          </figure>
+
+          <figure class="chart" data-chart="families">
+            <figcaption class="chart__title">
+              <span class="chart__name">Where the training goes</span>
+              <span class="chart__note">Training points by movement family</span>
+            </figcaption>
+            <div class="chart__body">
+              <div class="donut" data-donut>
+                <svg viewBox="0 0 120 120" role="img" aria-label="Training points by movement family">
+                  <circle class="donut__track" cx="60" cy="60" r="42"></circle>
+                  <g data-slices></g>
+                </svg>
+                <div class="donut__centre">
+                  <span class="donut__value" data-value>—</span>
+                  <span class="donut__label" data-centre-label>points</span>
+                </div>
+              </div>
+              <ul class="legend" data-legend></ul>
+            </div>
+          </figure>
+
+          <div class="community__side">
+            <ul class="stats">
+              <li class="stat"><span class="stat__value" data-stat="players">—</span><span class="stat__label">Players</span></li>
+              <li class="stat"><span class="stat__value" data-stat="online_now">—</span><span class="stat__label">Training now</span></li>
+              <li class="stat"><span class="stat__value" data-stat="active_7d">—</span><span class="stat__label">Active this week</span></li>
+              <li class="stat"><span class="stat__value" data-stat="sessions_7d">—</span><span class="stat__label">Sessions this week</span></li>
+              <li class="stat"><span class="stat__value" data-stat="volume_7d">—</span><span class="stat__label">Volume this week</span></li>
+              <li class="stat"><span class="stat__value" data-stat="joined_7d">—</span><span class="stat__label">Joined this week</span></li>
+            </ul>
+
+            <div class="week">
+              <div class="week__head">
+                <span class="week__name">Last 7 days</span>
+                <span class="week__note" data-week-note>Sessions per day</span>
+              </div>
+              <div class="week__bars" data-week-bars></div>
+            </div>
+
+            <p class="community__stamp" data-stamp>Reading the database…</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 FOOTER -->
+    <section class="panel panel--get" data-index="5">
       <footer class="panel__inner site-footer">
         <div class="site-footer__top">
           <div class="site-footer__brand">
             <img class="site-footer__logo" src="app_icon.png" alt="Solo Gainz app icon" width="56" height="56" loading="lazy" decoding="async" />
-            <div>
-              <p class="site-footer__name">Solo Gainz</p>
-              <p class="site-footer__tag">Fitness combat. Sign in once, then offline.</p>
+            <div class="site-footer__brandtext">
+              <p class="site-footer__name">
+                Solo Gainz
+                <span class="site-footer__rule" aria-hidden="true"></span>
+              </p>
+              <p class="site-footer__tag">Every rep is a round — train offline, sync when you're ready.</p>
             </div>
           </div>
           <nav class="site-footer__nav" aria-label="Footer">
             <a href="#panel-0">Home</a>
             <a href="#panel-palette">Palette</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms &amp; Conditions</a>
+            <a href="#panel-community">Community</a>
           </nav>
         </div>
         <div class="site-footer__divider" aria-hidden="true"></div>
         <div class="site-footer__bottom">
           <p class="site-footer__copy">© 2026 Xoventic · Solo Gainz. All rights reserved.</p>
-          <div class="site-footer__social">
+          <nav class="site-footer__legal" aria-label="Legal">
             <a href="mailto:xoventic@gmail.com">Contact</a>
-          </div>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms &amp; Conditions</a>
+          </nav>
         </div>
       </footer>
     </section>

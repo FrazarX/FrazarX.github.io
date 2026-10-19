@@ -456,6 +456,11 @@ h2 {
   gap: 0.9rem;
 }
 
+.site-footer__brandtext {
+  min-width: 0;
+  text-align: left;
+}
+
 .site-footer__logo {
   width: 56px;
   height: 56px;
@@ -467,14 +472,27 @@ h2 {
 
 .site-footer__name {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.35rem;
   letter-spacing: 0.02em;
 }
 
+/* The rule the name sits on. It grows to whatever width is left, so the
+   title and the line are one object instead of a heading with a stray
+   underline under it. */
+.site-footer__rule {
+  flex: 1 1 auto;
+  min-width: 2.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(62, 176, 255, 0.45), rgba(62, 176, 255, 0));
+}
+
 .site-footer__tag {
-  margin: 0.15rem 0 0;
+  margin: 0.25rem 0 0;
   color: var(--mute);
   font-size: 0.85rem;
 }
@@ -525,7 +543,15 @@ h2 {
   letter-spacing: 0.02em;
 }
 
-.site-footer__social a {
+.site-footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem 1.5rem;
+}
+
+.site-footer__legal a {
   color: var(--mute);
   text-decoration: none;
   font-size: 0.82rem;
@@ -534,7 +560,7 @@ h2 {
   transition: color 0.2s ease;
 }
 
-.site-footer__social a:hover {
+.site-footer__legal a:hover {
   color: var(--signal);
 }
 
@@ -782,6 +808,318 @@ h2 {
 
   .palette-row__role {
     margin: 0;
+  }
+}
+
+/* ── Community (section 5) ───────────────────────────────────────────────
+   Live numbers from the cloud database. The pies are drawn in site.js from
+   the aggregate RPC; the markup here is only the frame, so a failed fetch
+   leaves an honest empty chart instead of a broken one. */
+.panel--community {
+  background:
+  radial-gradient(ellipse 55% 45% at 18% 25%, rgba(62, 176, 255, 0.15), transparent 62%),
+  radial-gradient(ellipse 45% 40% at 84% 80%, rgba(255, 176, 58, 0.07), transparent 58%),
+  linear-gradient(180deg, #05101f, #03070f);
+}
+
+/* Doubled up on .panel__inner so the rule still wins over the plain
+   `.panel__inner { align-items: safe center }` reset in the touch/tablet
+   media query further down the file. */
+.panel__inner.community {
+  width: min(1080px, 100%);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: clamp(1.1rem, 2.6vw, 1.8rem);
+  --donut: clamp(112px, 20vh, 162px);
+}
+
+.community__copy {
+  text-align: center;
+}
+
+.community__copy h2,
+.community__copy .body {
+  margin-inline: auto;
+}
+
+.community__copy h2 {
+  max-width: 18ch;
+}
+
+.community__copy .body {
+  max-width: 58ch;
+}
+
+.community__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
+  grid-template-areas:
+  "tiers side"
+  "families side";
+  gap: clamp(1rem, 2.4vw, 1.9rem) clamp(1.25rem, 3vw, 2.5rem);
+  align-items: center;
+}
+
+.chart {
+  margin: 0;
+  min-width: 0;
+}
+
+.chart[data-chart="tiers"] {
+  grid-area: tiers;
+}
+
+.chart[data-chart="families"] {
+  grid-area: families;
+}
+
+.chart__title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.chart__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.chart__note {
+  margin-left: auto;
+  text-align: right;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.chart__body {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 1.5rem);
+}
+
+.donut {
+  position: relative;
+  flex: none;
+  width: var(--donut);
+  height: var(--donut);
+}
+
+.donut svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.donut__track {
+  fill: none;
+  stroke: rgba(238, 242, 255, 0.07);
+  stroke-width: 13;
+}
+
+.donut__centre {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+.donut__value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.4vw, 1.7rem);
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.donut__label {
+  margin-top: 0.28rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--mute);
+}
+
+.legend i {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--c);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.legend b {
+  margin-left: auto;
+  color: var(--text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.legend li.is-empty {
+  color: var(--faint);
+  opacity: 0.5;
+}
+
+.community__side {
+  grid-area: side;
+  min-width: 0;
+}
+
+.stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.1rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(66, 165, 245, 0.45);
+}
+
+.stat__value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.3vw, 1.65rem);
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat__label {
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.week {
+  margin-top: 1.2rem;
+}
+
+.week__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.week__name {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.week__note {
+  font-size: 0.66rem;
+  color: var(--faint);
+}
+
+.week__bars {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.45rem;
+  align-items: end;
+}
+
+.week__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.week__col span {
+  display: block;
+  width: 100%;
+  min-height: 3px;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(180deg, #6fc0ff, #2196f3);
+  box-shadow: 0 0 14px rgba(66, 165, 245, 0.35);
+}
+
+.week__col.is-zero span {
+  background: rgba(238, 242, 255, 0.12);
+  box-shadow: none;
+}
+
+.week__col small {
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.community__stamp {
+  margin: 1.1rem 0 0;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+@media (max-width: 900px) {
+  .community__grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+    "tiers"
+    "families"
+    "side";
+    gap: 1.4rem;
+  }
+
+  .panel__inner.community {
+    --donut: clamp(124px, 34vw, 168px);
+  }
+}
+
+@media (max-width: 520px) {
+  .chart__body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .legend {
+    width: 100%;
   }
 }
 
@@ -1067,7 +1405,7 @@ h2 {
   }
 
   .site-footer__nav a,
-  .site-footer__social a {
+  .site-footer__legal a {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1664,7 +2002,7 @@ button {
   }
 
   .site-footer__nav a:hover,
-  .site-footer__social a:hover {
+  .site-footer__legal a:hover {
     color: var(--mute);
   }
 }
