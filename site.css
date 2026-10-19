@@ -638,6 +638,153 @@ h2 {
   padding: 0 1.15rem 1.15rem;
 }
 
+/* ── Palette (section 4) ───────────────────────────────────────────── */
+.panel--palette {
+  background:
+  radial-gradient(ellipse 70% 55% at 50% 115%, rgba(62, 176, 255, 0.16), transparent 62%),
+  radial-gradient(ellipse 45% 40% at 85% 8%, rgba(255, 176, 58, 0.07), transparent 58%),
+  linear-gradient(180deg, #050d19, #03070f);
+}
+
+/* Doubled up on .panel__inner so the rule still wins over the plain
+   `.panel__inner { align-items: safe center }` reset in the touch/tablet
+   media query further down the file. */
+.panel__inner.palette {
+  width: min(1080px, 100%);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: clamp(1.4rem, 3.6vw, 2.4rem);
+}
+
+.palette__copy {
+  text-align: center;
+}
+
+.palette__copy h2,
+.palette__copy .body {
+  margin-inline: auto;
+}
+
+.palette__copy h2 {
+  max-width: 18ch;
+}
+
+.palette__copy .body {
+  max-width: 54ch;
+}
+
+.palette__bars {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.4vw, 1.5rem);
+}
+
+.palette-row {
+  display: grid;
+  grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem 1.4rem;
+}
+
+.palette-row__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+.palette-row__role {
+  margin: 0.2rem 0 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.palette-row__body {
+  min-width: 0;
+}
+
+.palette-bar {
+  display: flex;
+  height: clamp(2.1rem, 4.4vh, 2.9rem);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow:
+  inset 0 1px 0 rgba(255, 255, 255, 0.2),
+  inset 0 -14px 26px rgba(0, 0, 0, 0.28),
+  0 14px 34px rgba(0, 0, 0, 0.45);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.palette-bar > span {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.palette-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.95rem;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  color: var(--faint);
+}
+
+.palette-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+}
+
+.palette-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--c);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+@media (hover: hover) {
+  .palette-row:hover .palette-bar {
+    transform: translateY(-2px);
+    box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    inset 0 -14px 26px rgba(0, 0, 0, 0.28),
+    0 18px 42px rgba(0, 0, 0, 0.5),
+    0 0 0 1px var(--glow, rgba(66, 165, 245, 0.3)),
+    0 10px 34px var(--glow, rgba(66, 165, 245, 0.3));
+  }
+}
+
+@media (max-width: 760px) {
+  .palette-row {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .palette-row__head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .palette-row__role {
+    margin: 0;
+  }
+}
+
 /* Tablets, phones, and ANY touch device drop the horizontal cinema in favour of
  a rock-solid native vertical scroll. Each section becomes a full-height block
  that grows to fit its content, so nothing is clipped and nothing fights the

@@ -1,8 +1,8 @@
 /**
  * Solo Gainz — frazarx.github.io
  *
- * The site is four panels: title, trailer, FAQ, footer. Desktop reads them as
- * a horizontal filmstrip driven by the wheel; touch devices read them as an
+ * The site is five panels: title, trailer, FAQ, palette, footer. Desktop reads
+ * them as a horizontal filmstrip driven by the wheel; touch devices read them as an
  * ordinary vertical page, because hijacking scroll on a phone is how you make
  * a page feel broken.
  *
