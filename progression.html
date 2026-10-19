@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="How levels, ranks, XP and the ranked Elo work in Solo Gainz - every number, and how long each one takes." />
+  <meta name="theme-color" content="#071426" />
+  <meta name="robots" content="index, follow" />
+  <title>Progression — Solo Gainz</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="favicon-192.png" sizes="192x192" type="image/png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="site.css" />
+  <style>
+    /* Scoped to this page.
+       It lives here rather than in site.css because these components - the
+       band table, the tier chips, the formula cards - exist on exactly one
+       page, and site.css is loaded by three. */
+    .pg-wrap { max-width: 980px; margin: 0 auto; padding: 0 22px 120px; }
+    .pg-lede { font-size: 1.05rem; line-height: 1.7; color: var(--mute); max-width: 68ch; }
+    .pg-h2 { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: .04em;
+              margin: 56px 0 6px; }
+    .pg-rule { height: 1px; background: var(--line); margin: 0 0 22px; }
+    .pg-note { color: var(--faint); font-size: .88rem; line-height: 1.6; max-width: 68ch; }
+
+    .pg-formula { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                   margin: 22px 0; }
+    .pg-card { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px;
+                background: rgba(18, 44, 74, .45); }
+    .pg-card h3 { margin: 0 0 8px; font-size: .78rem; letter-spacing: .16em;
+                   text-transform: uppercase; color: var(--faint); font-weight: 700; }
+    .pg-eq { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 1.05rem;
+              color: var(--signal); }
+    .pg-card p { margin: 10px 0 0; font-size: .86rem; line-height: 1.6; color: var(--mute); }
+
+    .pg-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table.pg { width: 100%; border-collapse: collapse; font-size: .9rem; min-width: 560px; }
+    table.pg th { text-align: left; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+                   color: var(--faint); font-weight: 700; padding: 0 12px 10px 0;
+                   border-bottom: 1px solid var(--line); white-space: nowrap; }
+    table.pg td { padding: 11px 12px 11px 0; border-bottom: 1px solid rgba(238,242,255,.07);
+                   white-space: nowrap; }
+    table.pg td.num { font-variant-numeric: tabular-nums; }
+    table.pg td.strong { color: var(--text); font-weight: 700; }
+    table.pg tr:last-child td { border-bottom: 0; }
+
+    .pg-chip { display: inline-block; min-width: 34px; text-align: center; padding: 2px 8px;
+                border-radius: 7px; font-weight: 800; font-size: .8rem;
+                color: var(--c); border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
+                background: color-mix(in srgb, var(--c) 14%, transparent); }
+    .pg-title { color: var(--mute); font-size: .86rem; margin-left: 6px; }
+
+    .pg-big { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+               margin: 24px 0 8px; }
+    .pg-big div { border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+    .pg-big b { display: block; font-family: var(--font-display); font-size: 1.6rem;
+                 color: var(--heat); letter-spacing: .02em; }
+    .pg-big span { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+                    color: var(--faint); }
+    @media (max-width: 560px) { .pg-h2 { font-size: 1.25rem; } }
+  </style>
+</head>
+<body class="legal">
+  <header class="legal-chrome">
+    <a class="legal-chrome__brand" href="index.html"><span>Solo Gainz</span></a>
+    <a class="legal-chrome__back" href="index.html">Back to site</a>
+  </header>
+
+  <main class="legal-wrap pg-wrap">
+    <p class="legal-kicker">Reference</p>
+    <h1 class="legal-title">Progression</h1>
+    <p class="legal-meta">Every number in the game, and how long each one takes.</p>
+
+    <p class="pg-lede">
+      Solo Gainz has <strong>two ladders</strong> and they never touch. The
+      <strong>training rank</strong> comes from finishing quests: it only goes up, it
+      runs from level 1 to 1000, and it is what the shield beside your name means.
+      The <strong>ranked Elo</strong> comes from winning PvP matches: it goes down as
+      well as up, and it is what the coloured word in the PvP header means. Nothing you
+      do in one moves the other.
+    </p>
+
+    <h2 class="pg-h2">The curve</h2>
+    <div class="pg-rule"></div>
+    <p class="pg-lede">The whole training ladder is two straight lines.</p>
+
+    <div class="pg-formula">
+      <div class="pg-card">
+        <h3>To leave level n</h3>
+        <p class="pg-eq">40 + 10 &times; n</p>
+        <p>Level 1 costs 50 XP. Level 999 costs 10,030.</p>
+      </div>
+      <div class="pg-card">
+        <h3>A quest pays, at level n</h3>
+        <p class="pg-eq">12 + 3 &times; n</p>
+        <p>15 XP at level 1, 3,012 at the ceiling. Harder quests pay proportionally more.</p>
+      </div>
+      <div class="pg-card">
+        <h3>So a level costs</h3>
+        <p class="pg-eq">3&#8531; quests</p>
+        <p>Exactly, at every level &mdash; 40/12 and 10/3 are the same number, so the pace
+           cannot drift as you climb.</p>
+      </div>
+    </div>
+
+    <div class="pg-big">
+      <div><b>1000</b><span>Max level</span></div>
+      <div><b>5,034,960</b><span>XP, start to finish</span></div>
+      <div><b>3,330</b><span>Quests, start to finish</span></div>
+      <div><b>2.3 years</b><span>At 4 quests a day</span></div>
+    </div>
+
+    <h2 class="pg-h2">The seven ranks</h2>
+    <div class="pg-rule"></div>
+    <p class="pg-note">
+      Times assume the daily board &mdash; four quests a day. No rank owns more than a
+      third of the ladder.
+    </p>
+    <div class="pg-table-wrap">
+      <table class="pg">
+        <thead>
+          <tr><th>Rank</th><th>Levels</th><th>Count</th><th>XP</th><th>Quests</th>
+              <th>Time in rank</th><th>Reached at</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="pg-chip" style="--c:#8E9BAE">E</span> <span class="pg-title">Awakened</span></td>
+          <td class="num">1–14</td>
+          <td class="num">14</td>
+          <td class="num">1,610</td>
+          <td class="num">47</td>
+          <td class="num">12 days</td>
+          <td class="num strong">12 days</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#4FC3F7">D</span> <span class="pg-title">Prototype</span></td>
+          <td class="num">15–49</td>
+          <td class="num">35</td>
+          <td class="num">12,600</td>
+          <td class="num">117</td>
+          <td class="num">29 days</td>
+          <td class="num strong">41 days</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#4CAF50">C</span> <span class="pg-title">Elite</span></td>
+          <td class="num">50–124</td>
+          <td class="num">75</td>
+          <td class="num">68,250</td>
+          <td class="num">250</td>
+          <td class="num">2 months</td>
+          <td class="num strong">3 months</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#00E5C3">B</span> <span class="pg-title">Veteran</span></td>
+          <td class="num">125–274</td>
+          <td class="num">150</td>
+          <td class="num">305,250</td>
+          <td class="num">500</td>
+          <td class="num">4 months</td>
+          <td class="num strong">8 months</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#AB47BC">A</span> <span class="pg-title">Ace</span></td>
+          <td class="num">275–474</td>
+          <td class="num">200</td>
+          <td class="num">757,000</td>
+          <td class="num">667</td>
+          <td class="num">5 months</td>
+          <td class="num strong">1.1 years</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#FFB300">S</span> <span class="pg-title">Shadow</span></td>
+          <td class="num">475–724</td>
+          <td class="num">250</td>
+          <td class="num">1,508,750</td>
+          <td class="num">833</td>
+          <td class="num">7 months</td>
+          <td class="num strong">1.7 years</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#FFD54F">SG</span> <span class="pg-title">Sovereign</span></td>
+          <td class="num">725–1000</td>
+          <td class="num">276</td>
+          <td class="num">2,381,500</td>
+          <td class="num">917</td>
+          <td class="num">8 months</td>
+          <td class="num strong">2.3 years</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="pg-h2">How long to level 1000</h2>
+    <div class="pg-rule"></div>
+    <div class="pg-table-wrap">
+      <table class="pg">
+        <thead><tr><th>Quests a day</th><th>Time to max level</th></tr></thead>
+        <tbody>
+        <tr><td class="num">2</td><td class="num">4.6 years</td></tr>
+        <tr><td class="num">3</td><td class="num">3.0 years</td></tr>
+        <tr><td class="num">4</td><td class="num">2.3 years</td></tr>
+        <tr><td class="num">6</td><td class="num">1.5 years</td></tr>
+        <tr><td class="num">8</td><td class="num">1.1 years</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="pg-h2">What a quest pays</h2>
+    <div class="pg-rule"></div>
+    <div class="pg-table-wrap">
+      <table class="pg">
+        <thead><tr><th>Level</th><th>XP to next</th><th>Quest XP</th><th>Quest coins</th>
+                   <th>Rep target</th></tr></thead>
+        <tbody>
+        <tr><td class="num">1</td><td class="num">50</td><td class="num">15</td><td class="num">8</td><td class="num">10</td></tr>
+        <tr><td class="num">15</td><td class="num">190</td><td class="num">57</td><td class="num">11</td><td class="num">68</td></tr>
+        <tr><td class="num">50</td><td class="num">540</td><td class="num">162</td><td class="num">18</td><td class="num">118</td></tr>
+        <tr><td class="num">125</td><td class="num">1,290</td><td class="num">387</td><td class="num">33</td><td class="num">183</td></tr>
+        <tr><td class="num">275</td><td class="num">2,790</td><td class="num">837</td><td class="num">63</td><td class="num">267</td></tr>
+        <tr><td class="num">475</td><td class="num">4,790</td><td class="num">1,437</td><td class="num">103</td><td class="num">347</td></tr>
+        <tr><td class="num">725</td><td class="num">7,290</td><td class="num">2,187</td><td class="num">153</td><td class="num">427</td></tr>
+        <tr><td class="num">1000</td><td class="num">—</td><td class="num">3,012</td><td class="num">208</td><td class="num">500</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="pg-note">
+      Coins rise far more slowly than XP, on purpose: XP is a ladder and keeps pace with
+      the climb, but coins buy chests at a fixed price &mdash; paying them on the same
+      slope would make the shop free by the middle of the game. Rep targets follow a
+      square root for the same reason a linear one fails: a level-500 player owing 250
+      push-ups is not a workout, it is an afternoon.
+    </p>
+
+    <h2 class="pg-h2">The ranked ladder</h2>
+    <div class="pg-rule"></div>
+    <p class="pg-lede">
+      Everybody starts at <strong>1,000</strong> and nothing is shown until your first
+      settled match. Matches are Elo with <strong>K&nbsp;=&nbsp;24</strong>, and
+      matchmaking pairs you with someone near your own rating &mdash; so a result is
+      worth about <strong>&plusmn;12</strong> either way.
+    </p>
+    <div class="pg-table-wrap">
+      <table class="pg">
+        <thead>
+          <tr><th>Tier</th><th>From</th><th>55% wins</th><th>60%</th><th>70%</th><th>80%</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="pg-chip" style="--c:#8A94A6">Unranked</span></td>
+          <td class="num">—</td><td class="num" colspan="4">before your first settled match</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#B87333">Bronze</span></td>
+          <td class="num">1</td>
+          <td class="num" colspan="4">where everybody starts</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#9AA5B1">Iron</span></td>
+          <td class="num">1,100</td>
+<td class="num">83</td><td class="num">42</td><td class="num">21</td><td class="num">14</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#D9A441">Gold</span></td>
+          <td class="num">1,300</td>
+<td class="num">250</td><td class="num">125</td><td class="num">63</td><td class="num">42</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#5FD0E8">Diamond</span></td>
+          <td class="num">1,500</td>
+<td class="num">417</td><td class="num">208</td><td class="num">104</td><td class="num">69</td>
+        </tr>
+        <tr>
+          <td><span class="pg-chip" style="--c:#B06CF0">Solo Gainer</span></td>
+          <td class="num">1,750</td>
+<td class="num">625</td><td class="num">313</td><td class="num">156</td><td class="num">104</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="pg-note">
+      Those columns are <em>matches played</em>, from a fresh 1,000. A 50% win rate goes
+      nowhere by design &mdash; half the results have to go your way before the rating
+      moves at all, which is what makes it a rating rather than an attendance count.
+      Ratings are only ever settled when <strong>both players report</strong> and the two
+      reports disagree about who won; a match where both claim the win is void and moves
+      nobody. Leaving a ranked match early hands your opponent the win, and doing it
+      repeatedly locks you out of matchmaking &mdash; free the first time, then 15, 60
+      and 180 minutes, with the count clearing after a quiet day.
+    </p>
+
+    <h2 class="pg-h2">The four movement families</h2>
+    <div class="pg-rule"></div>
+    <p class="pg-lede">
+      A third scale, and the only one that is not a single number: every exercise belongs
+      to <strong>Upper Push, Upper Pull, Lower Front</strong> or <strong>Lower Back</strong>,
+      and each keeps its own level from 1 to 99.
+    </p>
+    <div class="pg-formula">
+      <div class="pg-card">
+        <h3>Points to reach level n</h3>
+        <p class="pg-eq">150 &times; (n&minus;1) &times; (n+2)</p>
+        <p>Level 2 costs 60 reps. The first gem, at level 3, costs 150. Level 99 is
+           about 123,000 points.</p>
+      </div>
+      <div class="pg-card">
+        <h3>What a rep is worth</h3>
+        <p class="pg-eq">10 points</p>
+        <p>A second of a hold is 2, a kilometre is 600 &mdash; so one rep is about five
+           seconds of a plank, or a sixtieth of a kilometre.</p>
+      </div>
+      <div class="pg-card">
+        <h3>Gems</h3>
+        <p class="pg-eq">8 tiers</p>
+        <p>Chip 3, Bead 10, Cushion 20, Kite 32, Radiant 46, Brilliant 60, Crown 75,
+           Nova 90. Nothing below level 3.</p>
+      </div>
+    </div>
+    <p class="pg-note">
+      Points are paid on <strong>confirmation</strong> and for the whole quest at once
+      &mdash; tapping + and &minus; on a counter moves nothing.
+    </p>
+
+    <h2 class="pg-h2">Coins</h2>
+    <div class="pg-rule"></div>
+    <div class="pg-table-wrap">
+      <table class="pg">
+        <thead><tr><th>Thing</th><th>Wooden</th><th>Iron</th><th>Gold</th><th>Diamond</th></tr></thead>
+        <tbody>
+          <tr><td>Chest</td><td class="num">300</td><td class="num">550</td><td class="num">1,500</td><td class="num">3,200</td></tr>
+          <tr><td>Key</td><td class="num">40</td><td class="num">90</td><td class="num">200</td><td class="num">420</td></tr>
+          <tr><td>Chance of a colour</td><td class="num">4%</td><td class="num">8%</td><td class="num">16%</td><td class="num">30%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="pg-note">
+      Colours are found, never sold &mdash; a chest is the only route to one. One key
+      bundle is on the shelf each week and it rotates, so no tier is more than a month
+      away. Nothing in the shop can be bought with anything but coins earned or purchased.
+    </p>
+
+    <p class="pg-note" style="margin-top:56px">
+      Every figure on this page is generated from the same arithmetic the app runs, so it
+      cannot drift from the game. Last generated for app version 0.5.5.
+    </p>
+  </main>
+</body>
+</html>

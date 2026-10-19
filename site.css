@@ -1,0 +1,1744 @@
+/* Tenada ships as a Latin-only WOFF2 subset.
+ The original is a Korean display face: 12,264 glyphs, 996 KB of raw TTF,
+ downloaded in full on every visit to render English headings. Subset to
+ Latin - the site is English only - and compressed, the same type costs
+ 9.6 KB. */
+@font-face {
+  font-family: "Tenada";
+  src: url("fonts/Tenada.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  /* Shared with the app and the control board: one blue, one ground, so the
+   three faces of Solo Gainz do not each invent their own. */
+  --void: #071426;
+  --ink: #0c2038;
+  --steel: #122c4a;
+  --line: rgba(238, 242, 255, 0.15);
+  --text: #eef2ff;
+  --mute: rgba(238, 242, 255, 0.66);
+  --faint: rgba(238, 242, 255, 0.4);
+  --signal: #42a5f5;
+  --signal-deep: #2196f3;
+  --heat: #ffb03a;
+  --brick: #4a1f1f;
+  --font-mega: "Tenada", system-ui, sans-serif;
+  --font-display: "Tenada", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  /* Dedicated, highly legible reading face for the legal documents. */
+  --font-legal: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-legal-ui: "Inter", system-ui, sans-serif;
+  --chrome-h: 64px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--void);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+/* The horizontal one-screen landing page locks scroll; legal pages scroll normally. */
+body.track-page {
+  height: 100%;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.noise {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* ── Chrome ─────────────────────────────────────────────────────────────── */
+.chrome {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: var(--chrome-h);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-left: max(clamp(1rem, 3vw, 2rem), env(safe-area-inset-left, 0px));
+  padding-right: max(clamp(1rem, 3vw, 2rem), env(safe-area-inset-right, 0px));
+  background: linear-gradient(180deg, rgba(3, 7, 15, 0.92), rgba(3, 7, 15, 0.55) 70%, transparent);
+}
+
+.chrome__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-mega);
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+}
+
+.chrome__brand img {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+.chrome__rail {
+  height: 2px;
+  background: rgba(232, 240, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.chrome__fill {
+  height: 100%;
+  width: 0%;
+  background: var(--signal);
+  transition: width 0.08s linear;
+}
+
+/* One bar, one action. This used to be a segmented control - a language
+ toggle welded to Download - and the two shared the slanted signal block
+ between them. With Arabic gone the block belongs entirely to Download, which
+ is the only thing anyone came to the header to do. */
+.chrome__actions {
+  display: inline-flex;
+  align-items: stretch;
+  background: var(--signal);
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  transition: filter 0.18s ease, transform 0.18s ease;
+}
+
+.chrome__apk {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  color: #041018;
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.55rem 0.9rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+/* Wide enough to read as the header's one deliberate destination, rather
+ than the leftover half of the pair it used to be. */
+.chrome__apk {
+  min-width: 12.25rem;
+  padding-inline: 1.35rem;
+}
+
+.chrome__apk:hover,
+.chrome__apk:focus-visible {
+  background: rgba(4, 16, 24, 0.12);
+  outline: none;
+}
+
+.chrome__actions:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff)
+  drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
+  drop-shadow(1.5px 1.5px 0 #fff) drop-shadow(-1.5px 1.5px 0 #fff)
+  drop-shadow(1.5px -1.5px 0 #fff) drop-shadow(-1.5px -1.5px 0 #fff)
+  drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+}
+
+/* ── Dots + hint ────────────────────────────────────────────────────────── */
+.dots {
+  position: fixed;
+  right: clamp(0.75rem, 2vw, 1.5rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.dots button {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 1px solid rgba(232, 240, 255, 0.35);
+  background: transparent;
+  border-radius: 0;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+  background 0.25s ease, border-color 0.25s ease;
+}
+
+.dots button:hover {
+  border-color: var(--signal);
+  transform: scale(1.15);
+}
+
+.dots button.is-active {
+  background: var(--signal);
+  border-color: var(--signal);
+  transform: scale(1.4);
+  animation: dot-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(62, 176, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(62, 176, 255, 0);
+  }
+}
+
+/* ── Horizontal track ───────────────────────────────────────────────────── */
+.track {
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  outline: none;
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.panel {
+  position: relative;
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* No prototype on the intro/hero panel — he only appears from the 2nd section on. */
+.panel--intro .panel__inner {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.5rem);
+}
+
+.panel__inner {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  padding: calc(var(--chrome-h) + 2rem + env(safe-area-inset-top, 0px))
+  max(clamp(1.25rem, 5vw, 5rem), env(safe-area-inset-right, 0px))
+  calc(2.5rem + env(safe-area-inset-bottom, 0px))
+  max(clamp(1.25rem, 5vw, 5rem), env(safe-area-inset-left, 0px));
+  display: flex;
+  /* "safe" keeps content pinned below the header instead of overflowing up
+   under it when a section is taller than the available height. */
+  align-items: safe center;
+  justify-content: center;
+}
+
+.panel__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.panel__bg--arena {
+  background:
+  radial-gradient(ellipse 60% 50% at 30% 70%, rgba(62, 176, 255, 0.16), transparent 60%),
+  radial-gradient(ellipse 40% 40% at 80% 20%, rgba(255, 176, 58, 0.08), transparent 55%),
+  linear-gradient(180deg, #07111f 0%, #03070f 100%);
+}
+
+.panel--get {
+  background:
+  radial-gradient(ellipse at 50% 30%, rgba(62, 176, 255, 0.18), transparent 55%),
+  #02050c;
+}
+
+.panel--trailer {
+  background:
+  radial-gradient(ellipse at 55% 45%, rgba(62, 176, 255, 0.14), transparent 52%),
+  linear-gradient(160deg, #03070f, #081222 50%, #03070f);
+}
+
+.trailer {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.45fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+  width: min(1320px, 94vw);
+  margin-inline: auto;
+}
+
+.panel__inner.intro,
+.panel__inner.faq {
+  width: min(1160px, 100%);
+  margin-inline: auto;
+}
+
+.trailer__copy {
+  text-align: left;
+}
+
+.trailer__copy h2 {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.85rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  max-width: 14ch;
+}
+
+.trailer__stage {
+  width: 100%;
+  max-width: 960px;
+  justify-self: center;
+}
+
+.trailer__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 2px solid #c8cdd6;
+  border-radius: 14px;
+  background: #000;
+  box-shadow:
+  0 0 0 5px rgba(200, 205, 214, 0.14),
+  0 18px 44px rgba(0, 0, 0, 0.45);
+  object-fit: contain;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .trailer {
+    grid-template-columns: 1fr;
+    width: min(680px, 100%);
+    justify-items: center;
+    text-align: center;
+  }
+
+  .trailer__copy {
+    text-align: center;
+  }
+
+  .trailer__copy h2,
+  .trailer__copy .body,
+  .trailer__copy .kicker {
+    margin-inline: auto;
+    max-width: none;
+  }
+}
+
+/* ── Type ───────────────────────────────────────────────────────────────── */
+.kicker {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.mega {
+  margin: 0;
+  font-family: var(--font-mega);
+  font-weight: 700;
+  font-size: clamp(4.2rem, 14vw, 9.5rem);
+  line-height: 0.95;
+  padding-top: 0.14em;
+  letter-spacing: 0.01em;
+  background: linear-gradient(180deg, #fff 10%, #8fd0ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4.2vw, 3.1rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  max-width: 14ch;
+}
+
+.body {
+  margin: 0;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  max-width: 36ch;
+}
+
+/* ── Intro ──────────────────────────────────────────────────────────────── */
+.intro {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* ── Get ────────────────────────────────────────────────────────────────── */
+.site-footer {
+  width: min(880px, 100%);
+  margin: 0 auto;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: safe center;
+  gap: 1.6rem;
+}
+
+/* Centred as a column: brand, then links.
+ It used to be a three-across row - brand, download button, nav - which fitted
+ in Arabic and wrapped in English, so the two languages disagreed about what
+ the footer looked like. The button is gone (the header carries the download
+ now, and repeating it one screen below was the same click twice), and what is
+ left is short enough to stack and centre at every width. */
+.site-footer__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.6rem;
+}
+
+.site-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.site-footer__logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+}
+
+.site-footer__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.02em;
+}
+
+.site-footer__tag {
+  margin: 0.15rem 0 0;
+  color: var(--mute);
+  font-size: 0.85rem;
+}
+
+.site-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 2rem;
+}
+
+.site-footer__nav a {
+  color: var(--mute);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.site-footer__nav a:hover {
+  color: var(--signal);
+}
+
+.site-footer__divider {
+  height: 1px;
+  background: linear-gradient(
+  90deg,
+  transparent,
+  rgba(62, 176, 255, 0.3) 15%,
+  rgba(62, 176, 255, 0.3) 85%,
+  transparent
+  );
+}
+
+.site-footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem 1.5rem;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.site-footer__copy {
+  margin: 0;
+  color: var(--faint);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+
+.site-footer__social a {
+  color: var(--mute);
+  text-decoration: none;
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(232, 240, 255, 0.2);
+  padding-bottom: 1px;
+  transition: color 0.2s ease;
+}
+
+.site-footer__social a:hover {
+  color: var(--signal);
+}
+
+/* ── FAQ (section 7) ────────────────────────────────────────────────────── */
+.panel--faq {
+  background:
+  radial-gradient(ellipse at 30% 25%, rgba(62, 176, 255, 0.1), transparent 55%),
+  linear-gradient(180deg, #05101f, #03070f);
+}
+
+.faq {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.faq__copy {
+  max-width: 34ch;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 620px;
+}
+
+.faq-item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(6, 12, 23, 0.5);
+  overflow: hidden;
+}
+
+.faq-item.is-open {
+  border-color: rgba(62, 176, 255, 0.45);
+  background: rgba(62, 176, 255, 0.06);
+}
+
+.faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 52px;
+  padding: 1rem 1.15rem;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+  font-weight: 600;
+}
+
+.faq-q__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: rgba(62, 176, 255, 0.15);
+  color: var(--signal);
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.faq-item.is-open .faq-q__icon {
+  transform: rotate(45deg);
+}
+
+.faq-a {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease;
+}
+
+.faq-item.is-open .faq-a {
+  grid-template-rows: 1fr;
+}
+
+.faq-a > p {
+  overflow: hidden;
+  margin: 0;
+  padding: 0 1.1rem;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  transition: padding 0.28s ease;
+}
+
+.faq-item.is-open .faq-a > p {
+  padding: 0 1.15rem 1.15rem;
+}
+
+/* Tablets, phones, and ANY touch device drop the horizontal cinema in favour of
+ a rock-solid native vertical scroll. Each section becomes a full-height block
+ that grows to fit its content, so nothing is clipped and nothing fights the
+ browser's own touch scrolling. */
+@media (max-width: 900px), (pointer: coarse) {
+  body.track-page {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+  }
+
+  .track {
+    display: block;
+    height: auto;
+    overflow: visible;
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+  }
+
+  .panel {
+    flex: none;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    scroll-snap-align: none;
+    scroll-snap-stop: unset;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  .panel__inner {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    align-items: safe center;
+    padding: calc(var(--chrome-h) + 1.75rem + env(safe-area-inset-top, 0px))
+    max(clamp(1.15rem, 6vw, 2.5rem), env(safe-area-inset-right, 0px))
+    calc(2.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Collapse every multi-column layout into one centered column. */
+  .intro,
+  .faq,
+  .trailer {
+    grid-template-columns: 1fr;
+    align-content: center;
+    justify-items: center;
+    text-align: center;
+    gap: clamp(1.35rem, 4.5vw, 2.25rem);
+  }
+
+  .faq__copy {
+    max-width: 40ch; margin-inline: auto;
+  }
+
+  .faq-list {
+    margin-inline: auto;
+    max-width: min(100%, 620px);
+    width: 100%;
+  }
+
+  .faq-q {
+    text-align: left;
+  }
+
+  .trailer__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .site-footer__top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.4rem;
+    width: 100%;
+  }
+
+  .site-footer__brand {
+    flex-direction: column; text-align: center;
+  }
+
+  .site-footer__nav {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .site-footer__nav a {
+    display: inline-block;
+    padding: 0.35rem 0.5rem;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .site-footer__bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  h2,
+  .body {
+    max-width: 34ch;
+    margin-inline: auto;
+  }
+
+  /* Intro: title centered near the top, hero on the ground below it. */
+  .intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+  }
+
+  :root {
+  }
+
+  /* Hero: centered on the ground line, looping (no scroll-stepping on touch). */
+  .mega {
+    font-size: clamp(3.1rem, 14vw, 4.8rem);
+  }
+
+  .panel--trailer .panel__inner {
+    padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Native vertical scroll — the side dots + hint aren't needed. */
+  .dots {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .chrome__apk {
+    min-width: 5.2rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.72rem;
+  }
+
+  .chrome__brand {
+    font-size: 1.05rem; gap: 0.45rem;
+  }
+
+  .chrome__brand img {
+    width: 28px; height: 28px;
+  }
+
+  h2 {
+    font-size: clamp(1.6rem, 5.8vw, 2.4rem); max-width: 18ch;
+  }
+}
+
+@media (max-width: 560px) {
+  .chrome {
+    grid-template-columns: 1fr auto;
+    gap: 0.55rem;
+    padding-left: max(0.85rem, env(safe-area-inset-left, 0px));
+    padding-right: max(0.85rem, env(safe-area-inset-right, 0px));
+  }
+
+  .chrome__rail {
+    display: none;
+  }
+
+  .chrome__brand {
+    font-size: 0.9rem; min-width: 0;
+  }
+
+  .chrome__brand span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 9.5rem;
+  }
+
+  .chrome__apk {
+    min-width: 4.7rem; padding: 0.48rem 0.6rem; font-size: 0.68rem;
+  }
+
+  .mega {
+    font-size: clamp(2.7rem, 13vw, 4rem);
+  }
+
+  h2 {
+    font-size: clamp(1.45rem, 6.2vw, 2.15rem); max-width: 20ch;
+  }
+
+  .panel__inner {
+    padding-inline: max(1rem, env(safe-area-inset-left, 0px))
+    max(1rem, env(safe-area-inset-right, 0px));
+  }
+
+  :root {
+  }
+
+  /* On narrow phones the CTA spans the column for an easy tap target. */
+  .faq-list {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .body {
+    font-size: 0.9rem;
+  }
+
+  .chrome__brand span {
+    max-width: 7.5rem;
+  }
+}
+
+/* Short / landscape viewports (e.g. phones held sideways): let sections grow
+ and scroll instead of clipping content taller than the screen. */
+@media (max-height: 560px) and (max-width: 900px),
+(max-height: 560px) and (pointer: coarse) {
+  .panel,
+  .panel__inner {
+    min-height: 0;
+    height: auto;
+  }
+
+  .panel__inner {
+    padding-top: calc(var(--chrome-h) + 1.1rem + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  :root {
+  }
+}
+
+/* Compact Android phones: keep every active panel readable without sideways
+ overflow, while leaving the desktop cinema layout untouched. */
+@media (max-width: 600px) {
+  :root {
+    --chrome-h: 56px;
+    /* The travelling figure is hidden at this width (see below), so the lane
+     reserved for him is dead space at the bottom of every panel - it was
+     pushing content up into the header on short phones. Keep just enough
+     to breathe. */
+  }
+
+  .chrome {
+    height: var(--chrome-h);
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    padding-inline: max(0.75rem, env(safe-area-inset-left, 0px))
+    max(0.75rem, env(safe-area-inset-right, 0px));
+  }
+
+  .chrome__brand {
+    min-width: 0;
+    font-size: 0.95rem;
+  }
+
+  .chrome__brand span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .chrome__actions {
+    gap: 0.35rem;
+  }
+
+  /* 44px is the smallest target a thumb hits reliably, and the floor both
+   Android and WCAG ask for. Everything tappable on a phone clears it. */
+  .chrome__apk {
+    min-width: 0;
+    min-height: 44px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.7rem;
+  }
+
+  .site-footer__nav a,
+  .site-footer__social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .panel__inner {
+    min-height: 100svh;
+    padding-top: calc(var(--chrome-h) + 1rem + env(safe-area-inset-top, 0px));
+    padding-right: max(1rem, env(safe-area-inset-right, 0px));
+    padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+    padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  }
+
+  .mega {
+    font-size: 3.8rem;
+    line-height: 0.95;
+  }
+
+  .panel--intro .mega {
+    background: none;
+    color: #eef2ff;
+    -webkit-text-fill-color: #eef2ff;
+  }
+
+  /* The travelling figure is hidden here, so nothing is competing with the
+   title for the lower half of the panel - centring it stops the hero
+   reading as a headline stranded above an empty screen. */
+  .panel--intro .intro {
+    justify-content: center;
+    padding-bottom: 3rem;
+  }
+
+  /* In the flow rather than pinned to the panel's bottom edge. The default
+   offset is measured off the runner's lane, which is nearly nothing at this
+   width, so it computed to a negative bottom and parked the hint below the
+   fold - and any absolute offset would be one more thing to keep in step
+   with the browser chrome a phone paints over the viewport. Sitting under
+   the title, it cannot be pushed off screen at all.
+   Scoped to the panel so it out-specifies the unscoped base rule, which
+   sits later in this file and would otherwise win regardless of the media
+   query. */
+  .panel--intro .scroll-cue {
+    position: static;
+    transform: none;
+    margin-top: 1.75rem;
+  }
+
+  .chrome__brand {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    line-height: 1.08;
+  }
+
+  .body,
+  .faq-a > p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .trailer {
+    gap: 1.25rem;
+  }
+
+  .trailer__copy,
+  .faq__copy {
+    width: 100%;
+  }
+
+  .trailer__stage {
+    width: 100%;
+  }
+
+  .trailer__video {
+    display: block;
+    width: 100%;
+    max-height: 42svh;
+    object-fit: contain;
+  }
+
+  .faq {
+    gap: 1rem;
+  }
+
+  .faq-list {
+    width: 100%;
+  }
+
+  .faq-q {
+    min-height: 48px;
+    padding: 0.8rem 0.9rem;
+    font-size: 0.86rem;
+  }
+
+  .site-footer {
+    padding-top: calc(var(--chrome-h) + 1rem + env(safe-area-inset-top, 0px));
+  }
+
+  .site-footer__nav a {
+    font-size: 0.84rem;
+  }
+}
+
+/* ── Legal pages (privacy / terms) ──────────────────────────────────────── */
+body.legal {
+  background:
+  radial-gradient(1200px 600px at 80% -10%, rgba(62, 176, 255, 0.10), transparent 60%),
+  radial-gradient(900px 500px at -10% 10%, rgba(21, 120, 212, 0.08), transparent 55%),
+  var(--void);
+  font-family: var(--font-legal-ui);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.legal-chrome {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem clamp(1rem, 4vw, 2.5rem);
+  background: linear-gradient(180deg, rgba(3, 7, 15, 0.95), rgba(3, 7, 15, 0.6));
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+
+.legal-chrome__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-mega);
+  letter-spacing: 0.04em;
+  font-size: 1.05rem;
+}
+
+.legal-chrome__brand img {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.legal-chrome__back {
+  text-decoration: none;
+  color: #041018;
+  background: var(--signal);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+}
+
+.legal-wrap {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4.5rem) clamp(1.15rem, 5vw, 2rem) 5rem;
+}
+
+/* The opening summary paragraph reads a touch larger. */
+.legal-wrap > p:first-of-type {
+  font-size: 1.12rem;
+  line-height: 1.75;
+  color: rgba(232, 240, 255, 0.9);
+}
+
+.legal-toc {
+  margin: 1.75rem 0 0;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(9, 19, 36, 0.45);
+}
+
+.legal-toc__title {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.legal-toc ol {
+  margin: 0;
+  padding-left: 1.2rem;
+  columns: 2;
+  column-gap: 2rem;
+  font-size: 0.9rem;
+}
+
+.legal-toc li {
+  margin: 0.2rem 0;
+}
+
+.legal-toc a {
+  color: var(--mute); text-decoration: none;
+}
+
+.legal-toc a:hover {
+  color: var(--signal);
+}
+
+.legal-kicker {
+  color: var(--signal);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  margin: 0 0 0.6rem;
+}
+
+.legal-title {
+  font-family: var(--font-mega);
+  font-size: clamp(2rem, 7vw, 3.2rem);
+  line-height: 1.05;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.legal-meta {
+  color: var(--faint);
+  font-size: 0.85rem;
+  margin: 0 0 2.5rem;
+}
+
+.legal-wrap h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3vw, 1.55rem);
+  margin: 2.6rem 0 0.7rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--line);
+  color: var(--text);
+  scroll-margin-top: 5rem;
+  letter-spacing: -0.01em;
+}
+
+.legal-wrap h2:first-of-type {
+  border-top: 0; padding-top: 0;
+}
+
+.legal-wrap h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.4rem;
+  color: var(--text);
+}
+
+.legal-wrap p,
+.legal-wrap li {
+  color: rgba(232, 240, 255, 0.78);
+  font-family: var(--font-legal);
+  font-size: 1.06rem;
+  line-height: 1.78;
+}
+
+.legal-wrap strong {
+  color: var(--text); font-weight: 600;
+}
+
+.legal-wrap a {
+  color: var(--signal); text-underline-offset: 2px;
+}
+
+.legal-wrap ul {
+  padding-left: 1.3rem; margin: 0.6rem 0 1.1rem;
+}
+
+.legal-wrap li {
+  margin: 0.4rem 0; padding-left: 0.15rem;
+}
+
+.legal-wrap li::marker {
+  color: var(--signal);
+}
+
+.legal-callout {
+  margin: 1.5rem 0;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(255, 176, 58, 0.4);
+  border-radius: 12px;
+  background: rgba(255, 176, 58, 0.07);
+}
+
+.legal-callout strong {
+  color: var(--heat);
+}
+
+.legal-foot {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+  font-size: 0.82rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.legal-foot a {
+  color: var(--mute); text-decoration: none;
+}
+
+.legal-foot a:hover {
+  color: var(--signal);
+}
+
+@media (max-width: 560px) {
+  .legal-toc ol {
+    columns: 1;
+  }
+
+  .legal-wrap p,
+  .legal-wrap li {
+    font-size: 1rem;
+  }
+
+  .legal-wrap > p:first-of-type {
+    font-size: 1.06rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ HERO CTA · TRUST · SCROLL CUE
+ The hero previously had no call to action at all — the only download
+ entry point was the small chrome button.
+ ═══════════════════════════════════════════════════════════════════════ */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.5rem, 5vh, 3rem);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--faint);
+  pointer-events: none;
+}
+
+.scroll-cue__arrow {
+  position: relative;
+  width: 44px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(232, 240, 255, 0.05), var(--signal));
+}
+
+.scroll-cue__arrow::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid var(--signal);
+  border-right: 1px solid var(--signal);
+  transform: rotate(45deg);
+  animation: cueNudge 1.9s ease-in-out infinite;
+}
+
+@keyframes cueNudge {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: 0.5; }
+  50% { transform: rotate(45deg) translate(3px, -3px); opacity: 1; }
+}
+
+/* Gated on `.js`, which site.js sets on <html> before first paint. If the
+ script fails to load or is blocked, the start state never applies and the
+ page reads as plain, fully visible content instead of a blank screen. */
+.panel.is-active [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+.panel.is-active [data-reveal]:nth-child(1) {
+  transition-delay: 0.05s;
+}
+
+.panel.is-active [data-reveal]:nth-child(2) {
+  transition-delay: 0.13s;
+}
+
+.panel.is-active [data-reveal]:nth-child(3) {
+  transition-delay: 0.21s;
+}
+
+.panel.is-active [data-reveal]:nth-child(4) {
+  transition-delay: 0.29s;
+}
+
+.panel.is-active [data-reveal]:nth-child(5) {
+  transition-delay: 0.37s;
+}
+
+.panel.is-active [data-reveal]:nth-child(6) {
+  transition-delay: 0.45s;
+}
+
+/*
+ * The page already had breakpoints, but they stepped: a heading sat at one
+ * size until 768px and then jumped. Between those steps — which is where most
+ * real phones actually live — the type was either too big for the column or
+ * too small for the space. `clamp()` makes the scale continuous instead, so
+ * the layout is right on a 320px phone and a 430px one without either being
+ * the size it was tuned for.
+ *
+ * Everything here is appended deliberately: it overrides the stepped rules
+ * above rather than replacing them, so the existing breakpoints still handle
+ * the structural reflows (stacking, hiding) that a scale cannot.
+ */
+:root {
+  /* One fluid ramp, referenced below. 100vw at the small end, capped so a
+   desktop does not get poster-sized body copy. */
+  --fluid-h1: clamp(2.1rem, 1.2rem + 4.6vw, 4.4rem);
+  --fluid-h2: clamp(1.5rem, 1.05rem + 2.2vw, 2.4rem);
+  --fluid-h3: clamp(1.15rem, 0.95rem + 1.1vw, 1.5rem);
+  --fluid-body: clamp(0.95rem, 0.9rem + 0.28vw, 1.06rem);
+  --fluid-gutter: clamp(16px, 4.2vw, 40px);
+}
+
+body {
+  font-size: var(--fluid-body);
+}
+
+h1 {
+  font-size: var(--fluid-h1); line-height: 1.04;
+}
+
+h2 {
+  font-size: var(--fluid-h2); line-height: 1.12;
+}
+
+h3 {
+  font-size: var(--fluid-h3); line-height: 1.2;
+}
+
+/* No element may force the page wider than the screen — the single most
+ common cause of a phone rendering a site with a horizontal scrollbar. */
+html,
+body {
+  overflow-x: hidden;
+}
+
+img,
+video,
+svg,
+canvas,
+iframe {
+  max-width: 100%; height: auto;
+}
+
+pre,
+code,
+table {
+  max-width: 100%; overflow-x: auto;
+}
+
+/* Long unbroken strings (URLs, package names) wrap instead of stretching. */
+p,
+li,
+td,
+dd {
+  overflow-wrap: anywhere;
+}
+
+/* Honour the notch on phones held in landscape. */
+@supports (padding: max(0px)) {
+  main,
+  footer,
+  header {
+    padding-left: max(var(--fluid-gutter), env(safe-area-inset-left));
+    padding-right: max(var(--fluid-gutter), env(safe-area-inset-right));
+  }
+}
+
+/* Anything tappable gets a real target on a touch screen, whatever the
+ viewport width claims. */
+@media (pointer: coarse) {
+  button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Short landscape phones: trim the vertical rhythm so the fold still holds
+ something useful. */
+@media (max-height: 480px) and (orientation: landscape) {
+  section {
+    padding-block: clamp(18px, 4vh, 36px);
+  }
+}
+
+/* Nothing else lives here by design, so the type gets room to breathe and
+ the optical centre sits slightly above the geometric one. */
+.panel--intro .intro {
+  gap: 0;
+}
+
+.panel--intro .mega {
+  font-size: clamp(4.6rem, 16vw, 11rem);
+  line-height: 0.9;
+  letter-spacing: 0.005em;
+  transform: translateY(-4%);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .panel--intro .mega {
+    font-size: clamp(3.6rem, 19vw, 6rem);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ PHONE PASS
+ Everything below is about the phone the page is actually opened on:
+ the notch, the thumb, the browser that inflates type, and the fact that
+ "hover" does not exist there. Desktop rules stay exactly as they were.
+ ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Native controls, scrollbars and the video chrome draw dark instead of
+   light, which is what a phone's system UI needs to match the page. */
+  color-scheme: dark;
+}
+
+html {
+  /* iOS inflates text in landscape unless told not to, which silently
+   breaks every clamp() in this file. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Header-brand taps land on the panel itself, not under the fixed bar. */
+  scroll-padding-top: calc(var(--chrome-h) + env(safe-area-inset-top, 0px));
+}
+
+a,
+button {
+  /* Kills the legacy double-tap-to-zoom delay on every control. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(66, 165, 245, 0.22);
+}
+
+/* The bar is fixed, so its own notch padding has to be inside its height -
+ otherwise a notched phone eats 47px of the 64px bar and the brand sits
+ against the top edge. */
+.chrome {
+  height: calc(var(--chrome-h) + env(safe-area-inset-top, 0px));
+}
+
+/* On a phone the page scrolls under the bar, so the gradient has to stay
+ opaque enough for the brand to remain readable over a panel's heading. */
+@media (max-width: 900px), (pointer: coarse) {
+  .chrome {
+    background: linear-gradient(
+      180deg,
+      rgba(3, 7, 15, 0.97) 0%,
+      rgba(3, 7, 15, 0.86) 62%,
+      rgba(3, 7, 15, 0.42) 100%
+    );
+  }
+}
+
+/* A phone has no hover: without this the download key keeps the white
+ halo and the lifted position after it has been tapped, and every footer
+ link stays highlighted. */
+@media (hover: none) {
+  .chrome__actions:hover {
+    transform: none;
+    filter: none;
+  }
+
+  .dots button:hover {
+    border-color: rgba(232, 240, 255, 0.35);
+    transform: none;
+  }
+
+  .site-footer__nav a:hover,
+  .site-footer__social a:hover {
+    color: var(--mute);
+  }
+}
+
+@media (max-width: 600px) {
+  /* 14.4px body copy is legible on a desk and cramped in a hand. The
+   answers are the part people actually read, so they get the largest
+   step; the questions get a matching lift and room to wrap. */
+  .body,
+  .faq-a > p {
+    font-size: 0.97rem;
+    line-height: 1.55;
+  }
+
+  .faq-q {
+    font-size: 0.95rem;
+    line-height: 1.35;
+    padding: 0.9rem 1rem;
+    gap: 0.85rem;
+  }
+
+  .faq-q > span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .faq-q__icon {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  h2 {
+    font-size: clamp(1.55rem, 7vw, 2rem);
+    max-width: 22ch;
+  }
+
+  /* The portrait cap was only ever needed for landscape phones; here it
+   turns the 16:9 player into a letterboxed black slab. */
+  .trailer__video {
+    max-height: none;
+    border-radius: 10px;
+  }
+
+  .trailer {
+    gap: 1.15rem;
+  }
+
+  .site-footer {
+    gap: 1.35rem;
+  }
+
+  .site-footer__logo {
+    width: 52px;
+    height: 52px;
+  }
+
+  .site-footer__nav {
+    gap: 0.35rem 1.1rem;
+  }
+
+  .site-footer__copy {
+    font-size: 0.74rem;
+  }
+}
+
+/* Short landscape phones (a 390px-tall viewport): the single-column
+ trailer already scrolls, so it needs no height cap - but the copy above
+ it does need less air. */
+@media (max-height: 560px) and (max-width: 900px),
+  (max-height: 560px) and (pointer: coarse) {
+  .trailer {
+    gap: 0.9rem;
+  }
+
+  .trailer__copy h2 {
+    margin-bottom: 0.45rem;
+  }
+
+  .trailer__copy .body {
+    font-size: 0.92rem;
+  }
+
+  .faq {
+    gap: 0.9rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .chrome__apk {
+    padding-inline: 0.6rem;
+    font-size: 0.66rem;
+  }
+
+  .body,
+  .faq-a > p {
+    font-size: 0.94rem;
+  }
+
+  .faq-q {
+    font-size: 0.9rem;
+    padding-inline: 0.85rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ LEGAL PAGES
+ Privacy and Terms were a different, flatter document. They now sit on the
+ same arena ground as the landing page, carry the same brand size, and use
+ the same slanted signal block for their one action.
+ ═══════════════════════════════════════════════════════════════════════ */
+
+body.legal {
+  background-color: var(--void);
+  background-image:
+    radial-gradient(ellipse 60% 50% at 30% 70%, rgba(62, 176, 255, 0.16), transparent 60%),
+    radial-gradient(ellipse 40% 40% at 80% 20%, rgba(255, 176, 58, 0.08), transparent 55%),
+    linear-gradient(180deg, #07111f 0%, #03070f 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.legal-chrome {
+  min-height: calc(var(--chrome-h) + env(safe-area-inset-top, 0px));
+  padding-top: max(0.9rem, env(safe-area-inset-top, 0px));
+  padding-left: max(clamp(1rem, 4vw, 2.5rem), env(safe-area-inset-left, 0px));
+  padding-right: max(clamp(1rem, 4vw, 2.5rem), env(safe-area-inset-right, 0px));
+}
+
+/* Same mark, same size, as the landing page's bar. */
+.legal-chrome__brand {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+/* The landing page's one action is a slanted signal block; the legal
+ pages' one action uses the same shape rather than a rounded pill. */
+.legal-chrome__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.7rem 1.15rem;
+  border-radius: 0;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  transition: filter 0.18s ease;
+}
+
+@media (hover: hover) {
+  .legal-chrome__back:hover {
+    filter: brightness(1.08);
+  }
+}
+
+@media (max-width: 1000px) {
+  /* Two columns of contents at 700px is a wall of narrow links. */
+  .legal-toc ol {
+    columns: 1;
+  }
+}
+
+/* The landing page steps its brand down at 768 and 600; the legal header
+ has to take the same steps or the two bars are different sizes. */
+@media (max-width: 768px) {
+  .legal-chrome__brand {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .legal-chrome__brand {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .legal-chrome__brand {
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+
+  .legal-chrome__back {
+    min-height: 44px;
+    padding: 0.55rem 0.8rem;
+    font-size: 0.7rem;
+  }
+
+  .legal-title {
+    font-size: clamp(1.8rem, 9vw, 2.6rem);
+  }
+
+  .legal-wrap {
+    padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .legal-wrap p,
+  .legal-wrap li {
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .legal-wrap > p:first-of-type {
+    font-size: 1.04rem;
+  }
+
+  .legal-callout {
+    padding: 0.9rem 1rem;
+  }
+
+  .legal-foot {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+  }
+
+  .legal-foot a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
