@@ -2513,3 +2513,16 @@ body.legal {
 .trailer__video {
     border-radius: 12px;
 }
+/* The hero's one line. The title alone said the name and nothing else, so
+   the first screen had no idea what the app is; this says it in a sentence
+   and gets out of the way. */
+.intro__line {
+    margin: clamp(1.1rem, 2.4vw, 1.8rem) auto 0;
+    max-width: 34ch;
+    text-align: center;
+    color: var(--mute);
+    font-family: var(--font-display);
+    font-size: clamp(0.95rem, 1.35vw, 1.1rem);
+    line-height: 1.55;
+    letter-spacing: 0.01em;
+}
