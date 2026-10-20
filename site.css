@@ -2526,3 +2526,162 @@ body.legal {
     line-height: 1.55;
     letter-spacing: 0.01em;
 }
+/* ═══════════════════════════════════════════════════════════════════════
+   The custom cursor, and the social section
+   ═══════════════════════════════════════════════════════════════════════
+
+   The cursor set in `Assets/Custom Cursor` is a star - the site's own shape
+   rather than the OS arrow. Windows ships it as .cur files, which no
+   browser takes, so the six the site uses were converted to PNG (the
+   conversion reads the .cur by hand: an ICONDIR, a hotspot and a DIB) and
+   live in `cursors/`.
+
+   The hotspot is the point the cursor aims at, and it is not the top-left
+   corner of the image for every one of them, so each is declared with its
+   own.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+body {
+    cursor: url("cursors/default.png") 4 0, auto;
+}
+
+a,
+button,
+[role="button"],
+summary,
+label,
+input,
+select,
+textarea {
+    cursor: url("cursors/person.png") 4 0, pointer;
+}
+
+p,
+li,
+h1,
+h2,
+h3,
+span,
+strong,
+em,
+figcaption {
+    cursor: url("cursors/text.png") 16 16, text;
+}
+
+/* A touch device has no cursor to draw, and a device that cannot load the
+   image must not be left with a missing pointer. */
+@media (hover: none), (pointer: coarse) {
+    body,
+    a,
+    button,
+    [role="button"],
+    summary,
+    label,
+    input,
+    select,
+    textarea,
+    p,
+    li,
+    h1,
+    h2,
+    h3,
+    span,
+    strong,
+    em,
+    figcaption {
+        cursor: auto;
+    }
+}
+
+/* ── The social section ───────────────────────────────────────────────── */
+
+.panel--social {
+    background:
+    radial-gradient(ellipse 60% 45% at 25% 30%, rgba(66, 165, 245, 0.13), transparent 62%),
+    radial-gradient(ellipse 45% 40% at 80% 75%, rgba(176, 108, 240, 0.08), transparent 58%),
+    linear-gradient(180deg, #05101f, #03070f);
+}
+
+.social {
+    width: min(1080px, 100%);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.6rem, 3.4vw, 2.6rem);
+}
+
+.social__copy {
+    text-align: center;
+}
+
+.social__copy h2 {
+    margin-inline: auto;
+    max-width: 18ch;
+}
+
+.social__copy .body {
+    margin-inline: auto;
+    max-width: 46ch;
+}
+
+.social__row {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(0.6rem, 1.4vw, 1rem);
+    width: 100%;
+}
+
+.social__btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    width: clamp(88px, 9vw, 112px);
+    padding: 0.95rem 0.6rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(18, 44, 74, 0.32), rgba(7, 20, 38, 0.2));
+    box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 14px 34px rgba(0, 0, 0, 0.3);
+    color: var(--mute);
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.social__btn img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    display: block;
+}
+
+.social__btn span {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.social__btn:hover,
+.social__btn:focus-visible {
+    transform: translateY(-3px);
+    border-color: rgba(66, 165, 245, 0.5);
+    color: var(--text);
+}
+
+@media (max-width: 520px) {
+    .social__btn {
+        width: calc(33.333% - 0.45rem);
+    }
+
+    .social__btn img {
+        width: 36px;
+        height: 36px;
+    }
+}
